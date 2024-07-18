@@ -84,64 +84,11 @@ class _EditScreenState extends State<EditScreen> {
                             ),
                           ),
                         if (cTemplate != null)
-                          EditItemsWithTemplate(items: items, cTemplate: cTemplate!)
+                          EditItemsWithTemplate(items: items, cTemplate: cTemplate!, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item))
                         else
                           SizedBox(
                             width: screenSize.width,
-                            child: EditItemsWithOutTemplate(
-                              items: items,
-                              onDoubleTap: (item) async {
-                                int indexOfItem = items.indexOf(items.firstWhere((element) => element == item));
-                                if (item.type == EditItemType.text) {
-                                  setState(() {
-                                    insertingText = true;
-                                  });
-                                  showGeneralDialog(
-                                      context: context,
-                                      pageBuilder: (context, animation, secondaryAnimation) => InsertTextScreen(
-                                            controller: TextEditingController(text: item.text),
-                                            fontSize: item.fontSize!,
-                                            selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
-                                            selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
-                                          )).then((returnValue) {
-                                    if (returnValue != null) {
-                                      items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
-                                    } else {
-                                      items.insert(indexOfItem, item);
-                                    }
-                                    setState(() {
-                                      insertingText = false;
-                                    });
-                                  });
-                                  items.removeAt(indexOfItem);
-                                } else {
-                                  setState(() {
-                                    insertingButton = true;
-                                  });
-                                  showGeneralDialog(
-                                      context: context,
-                                      pageBuilder: (context, animation, secondaryAnimation) => InsertButtonScreen(
-                                            product: item.product!,
-                                            buttonText: item.text!,
-                                            selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
-                                            selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
-                                            fontSize: item.fontSize!,
-                                            selectedShapeIndex: item.selectedButtonShapeIndex!,
-                                          )).then((returnValue) {
-                                    if (returnValue != null) {
-                                      log(returnValue.toString());
-                                      items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
-                                    } else {
-                                      items.insert(indexOfItem, item);
-                                    }
-                                    setState(() {
-                                      insertingButton = false;
-                                    });
-                                  });
-                                  items.removeAt(indexOfItem);
-                                }
-                              },
-                            ),
+                            child: EditItemsWithOutTemplate(items: items, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item)),
                           ),
                       ],
                     );
@@ -380,6 +327,166 @@ class _EditScreenState extends State<EditScreen> {
         ],
       ),
     );
+  }
+
+  onDoubleTap(item) async {
+    int indexOfItem = items.indexOf(items.firstWhere((element) => element == item));
+    if (item.type == EditItemType.text) {
+      setState(() {
+        insertingText = true;
+      });
+      showGeneralDialog(
+          context: context,
+          pageBuilder: (context, animation, secondaryAnimation) => InsertTextScreen(
+                controller: TextEditingController(text: item.text),
+                fontSize: item.fontSize!,
+                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
+              )).then((returnValue) {
+        if (returnValue != null) {
+          items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
+        } else {
+          items.insert(indexOfItem, item);
+        }
+        setState(() {
+          insertingText = false;
+        });
+      });
+      items.removeAt(indexOfItem);
+    } else {
+      setState(() {
+        insertingButton = true;
+      });
+      showGeneralDialog(
+          context: context,
+          pageBuilder: (context, animation, secondaryAnimation) => InsertButtonScreen(
+                product: item.product!,
+                buttonText: item.text!,
+                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
+                fontSize: item.fontSize!,
+                selectedShapeIndex: item.selectedButtonShapeIndex!,
+              )).then((returnValue) {
+        if (returnValue != null) {
+          log(returnValue.toString());
+          items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
+        } else {
+          items.insert(indexOfItem, item);
+        }
+        setState(() {
+          insertingButton = false;
+        });
+      });
+      items.removeAt(indexOfItem);
+    }
+  }
+
+  onLongPress(item) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog.adaptive(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              splashColor: Colors.transparent,
+              onTap: () => Navigator.pop(context),
+              child: SvgPicture.asset(
+                'assets/icons/cancel_without_background.svg',
+                height: 25,
+                fit: BoxFit.fill,
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 20),
+                  SvgPicture.asset(
+                    'assets/icons/delete_bg.svg',
+                    height: 110,
+                    fit: BoxFit.fill,
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    'Delete the Instant Page?',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 20),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'You will not be able to recover it.',
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(color: const Color(0xFFFE2B54)),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: const BorderSide(color: Color(0xFFFE2B54)),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, false);
+                        },
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xFFFE2B54)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: const WidgetStatePropertyAll(Color(0xFFFE2B54)),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              'Yes, Delete it.',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    ).then((value) {
+      if (value != null && value) {
+        setState(() {
+          items.removeAt(items.indexOf(items.firstWhere((element) => element == item)));
+        });
+      }
+    });
   }
 }
 

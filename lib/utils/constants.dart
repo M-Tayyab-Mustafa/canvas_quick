@@ -331,10 +331,11 @@ class ButtonMessageShape extends CustomClipper<Path> {
 }
 
 class EditItemsWithOutTemplate extends StatefulWidget {
-  const EditItemsWithOutTemplate({super.key, required this.items, this.fromTemplateScreen = false, required this.onDoubleTap});
+  const EditItemsWithOutTemplate({super.key, required this.items, this.fromTemplateScreen = false, this.onDoubleTap, this.onLongPress});
   final List<EditItem> items;
   final bool fromTemplateScreen;
-  final void Function(EditItem item) onDoubleTap;
+  final void Function(EditItem item)? onDoubleTap;
+  final void Function(EditItem item)? onLongPress;
 
   @override
   State<EditItemsWithOutTemplate> createState() => _EditItemsWithOutTemplateState();
@@ -363,8 +364,15 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
                         });
                       },
                       child: GestureDetector(
+                          onLongPress: () {
+                            if (widget.onLongPress != null) {
+                              widget.onLongPress!(item);
+                            }
+                          },
                           onDoubleTap: () {
-                            widget.onDoubleTap(item);
+                            if (widget.onDoubleTap != null) {
+                              widget.onDoubleTap!(item);
+                            }
                           },
                           child: ItemTextWidget(item: item)),
                     )
@@ -385,8 +393,15 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
                         });
                       },
                       child: GestureDetector(
+                        onLongPress: () {
+                          if (widget.onLongPress != null) {
+                            widget.onLongPress!(item);
+                          }
+                        },
                         onDoubleTap: () {
-                          widget.onDoubleTap(item);
+                          if (widget.onDoubleTap != null) {
+                            widget.onDoubleTap!(item);
+                          }
                         },
                         child: CButton(
                           enabled: false,
@@ -502,9 +517,11 @@ class ProductCard extends StatelessWidget {
 }
 
 class EditItemsWithTemplate extends StatefulWidget {
-  const EditItemsWithTemplate({super.key, required this.items, required this.cTemplate});
+  const EditItemsWithTemplate({super.key, required this.items, required this.cTemplate, this.onDoubleTap, this.onLongPress});
   final List<EditItem> items;
   final CTemplate cTemplate;
+  final void Function(EditItem item)? onDoubleTap;
+  final void Function(EditItem item)? onLongPress;
 
   @override
   State<EditItemsWithTemplate> createState() => _EditItemsWithTemplateState();
@@ -527,18 +544,41 @@ class _EditItemsWithTemplateState extends State<EditItemsWithTemplate> {
               case EditItemType.text:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 5),
-                  child: ItemTextWidget(item: item),
+                  child: GestureDetector(
+                      onLongPress: () {
+                        if (widget.onLongPress != null) {
+                          widget.onLongPress!(item);
+                        }
+                      },
+                      onDoubleTap: () {
+                        if (widget.onDoubleTap != null) {
+                          widget.onDoubleTap!(item);
+                        }
+                      },
+                      child: ItemTextWidget(item: item)),
                 );
               default:
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 5),
-                  child: CButton(
-                    color: item.color!,
-                    fontFamily: item.fontFamily!,
-                    selectedShapeIndex: item.selectedButtonShapeIndex!,
-                    buttonText: item.text!,
-                    fontSize: item.fontSize!,
-                    controller: TextEditingController(text: item.text),
+                  child: GestureDetector(
+                    onLongPress: () {
+                      if (widget.onLongPress != null) {
+                        widget.onLongPress!(item);
+                      }
+                    },
+                    onDoubleTap: () {
+                      if (widget.onDoubleTap != null) {
+                        widget.onDoubleTap!(item);
+                      }
+                    },
+                    child: CButton(
+                      color: item.color!,
+                      fontFamily: item.fontFamily!,
+                      selectedShapeIndex: item.selectedButtonShapeIndex!,
+                      buttonText: item.text!,
+                      fontSize: item.fontSize!,
+                      controller: TextEditingController(text: item.text),
+                    ),
                   ),
                 );
             }

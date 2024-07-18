@@ -67,7 +67,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                         else
                           SizedBox(
                             width: screenSize.width,
-                            child: EditItemsWithOutTemplate(items: widget.items, fromTemplateScreen: true, onDoubleTap: (item) {}),
+                            child: EditItemsWithOutTemplate(items: widget.items),
                           ),
                       ],
                     );

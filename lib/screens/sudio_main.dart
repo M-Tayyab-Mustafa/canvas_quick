@@ -74,7 +74,9 @@ class _StudioMainState extends State<StudioMain> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  selectedIndex = 0;
+                                  setState(() {
+                                    selectedIndex = 0;
+                                  });
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog.adaptive(
@@ -174,13 +176,15 @@ class _StudioMainState extends State<StudioMain> {
                                       ),
                                     ),
                                   ).whenComplete(
-                                    () => selectedIndex = null,
+                                    () => setState(() {
+                                      selectedIndex = null;
+                                    }),
                                   );
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(color: const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
+                                  decoration: BoxDecoration(color: selectedIndex == 0 ? const Color(0xffF03B77) : const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/icons/pin.svg',
@@ -192,7 +196,9 @@ class _StudioMainState extends State<StudioMain> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  selectedIndex = 0;
+                                  setState(() {
+                                    selectedIndex = 1;
+                                  });
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog.adaptive(
@@ -291,13 +297,15 @@ class _StudioMainState extends State<StudioMain> {
                                       ),
                                     ),
                                   ).whenComplete(
-                                    () => selectedIndex = null,
+                                    () => setState(() {
+                                      selectedIndex = null;
+                                    }),
                                   );
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(color: const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
+                                  decoration: BoxDecoration(color: selectedIndex == 1 ? const Color(0xffF03B77) : const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/icons/publish.svg',
@@ -308,7 +316,11 @@ class _StudioMainState extends State<StudioMain> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () {},
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = 2;
+                                  });
+                                },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),
                                   padding: const EdgeInsets.all(8),
@@ -324,7 +336,9 @@ class _StudioMainState extends State<StudioMain> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  selectedIndex = 0;
+                                  setState(() {
+                                    selectedIndex = 3;
+                                  });
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog.adaptive(
@@ -424,13 +438,15 @@ class _StudioMainState extends State<StudioMain> {
                                       ),
                                     ),
                                   ).whenComplete(
-                                    () => selectedIndex = null,
+                                    () => setState(() {
+                                      selectedIndex = null;
+                                    }),
                                   );
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(color: const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
+                                  decoration: BoxDecoration(color: selectedIndex == 3 ? const Color(0xffF03B77) : const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/icons/trash.svg',

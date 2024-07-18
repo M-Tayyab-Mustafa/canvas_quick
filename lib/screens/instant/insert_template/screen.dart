@@ -63,28 +63,11 @@ class _InsertTemplateState extends State<InsertTemplate> {
                             ),
                           ),
                         if (selectedTemplate != null)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10, bottom: 10),
-                            child: Align(
-                              alignment: selectedTemplate!.alignment,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: widget.items
-                                    .map(
-                                      (item) => item.type == EditItemType.text
-                                          ? ItemTextWidget(item: item)
-                                          : item.type == EditItemType.button
-                                              ? CButton(color: item.color!, fontFamily: item.fontFamily!, selectedShapeIndex: item.selectedButtonShapeIndex!)
-                                              : Container(),
-                                    )
-                                    .toList(),
-                              ),
-                            ),
-                          )
+                          EditItemsWithTemplate(items: widget.items, cTemplate: selectedTemplate!)
                         else
                           SizedBox(
                             width: screenSize.width,
-                            child: EditItems(items: widget.items, fromTemplateScreen: true),
+                            child: EditItemsWithOutTemplate(items: widget.items, fromTemplateScreen: true, onDoubleTap: (item) {}),
                           ),
                       ],
                     );

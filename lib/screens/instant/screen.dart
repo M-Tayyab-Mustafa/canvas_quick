@@ -45,11 +45,7 @@ class InstantScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) => SizedBox(height: screenSize.height, child: const ImagesScreen()),
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ImagesScreen()));
                   },
                   child: const Text(
                     'Add New Instant Page',

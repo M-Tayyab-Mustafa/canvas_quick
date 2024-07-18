@@ -19,17 +19,13 @@ class ImagesScreen extends StatefulWidget {
 class _ImagesScreenState extends State<ImagesScreen> {
   Color currentColor = Colors.white;
   bool isPickingColor = true;
-  final List<String> images = [
-    "assets/images/image1.jpeg",
-    "assets/images/image2.jpeg",
-    "assets/images/image3.jpeg",
-    "assets/images/image4.jpeg",
-    "assets/images/image5.jpeg",
-    "assets/images/image6.jpeg",
-    "assets/images/image7.jpeg",
-    "assets/images/image8.jpeg",
-    "assets/images/image9.jpeg",
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _getImages();
+  }
+
+  List<String> fileImages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -80,13 +76,10 @@ class _ImagesScreenState extends State<ImagesScreen> {
                         setState(() {
                           isPickingColor = false;
                         });
+                        _getImages();
                         await ImagePicker().pickImage(source: ImageSource.gallery).then((imageFile) {
                           if (imageFile != null) {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (context) => SizedBox(height: screenSize.height, child: EditScreen(imageFile: File(imageFile.path))),
-                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(imageFile: File(imageFile.path)))).whenComplete(() => _getImages());
                           }
                         });
                       },
@@ -169,11 +162,7 @@ class _ImagesScreenState extends State<ImagesScreen> {
                                 ),
                               ),
                               onPressed: () async {
-                                showModalBottomSheet(
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) => SizedBox(height: screenSize.height, child: EditScreen(backgroundColor: currentColor)),
-                                );
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(backgroundColor: currentColor))).whenComplete(() => _getImages());
                               },
                               child: const Text(
                                 'Next',
@@ -187,25 +176,36 @@ class _ImagesScreenState extends State<ImagesScreen> {
                   )
                 else
                   Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 2,
-                      mainAxisSpacing: 2,
-                      childAspectRatio: 0.56,
-                      children: List.generate(images.length, (index) {
-                        return Container(
-                          height: screenSize.height * 0.3,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage(
-                                images[index],
+                    child: fileImages.isEmpty
+                        ? Center(
+                            child: Text(
+                              'Image Not Available',
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : GridView.builder(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.8,
+                              crossAxisCount: 3,
+                            ),
+                            itemCount: fileImages.length,
+                            itemBuilder: (context, index) => InkWell(
+                              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(imageFile: File(fileImages[index])))).whenComplete(() => _getImages()),
+                              child: Container(
+                                height: screenSize.height * 0.3,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: FileImage(
+                                      File(fileImages[index]),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        );
-                      }),
-                    ),
                   )
               ],
             ),
@@ -213,5 +213,14 @@ class _ImagesScreenState extends State<ImagesScreen> {
         ),
       ),
     );
+  }
+
+  _getImages() async {
+    var directory = Directory('/storage/emulated/0/Pictures/Screens');
+    if (await directory.exists()) {
+      setState(() {
+        fileImages = directory.listSync().map((e) => e.path).toList();
+      });
+    }
   }
 }

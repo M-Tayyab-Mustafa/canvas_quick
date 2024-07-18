@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../utils/constants.dart';
+import 'product.dart';
 
 class EditItem {
   Offset position;
@@ -12,6 +13,8 @@ class EditItem {
   String? fontFamily;
   final EditItemType type;
   int? selectedButtonShapeIndex;
+  Product? product;
+
   EditItem({
     required this.type,
     required this.position,
@@ -21,6 +24,7 @@ class EditItem {
     this.color,
     this.fontFamily,
     this.selectedButtonShapeIndex,
+    this.product,
   });
 
   EditItem copyWith({
@@ -32,6 +36,7 @@ class EditItem {
     Color? color,
     String? fontFamily,
     int? selectedButtonShapeIndex,
+    Product? product,
   }) {
     return EditItem(
       type: type ?? this.type,
@@ -42,23 +47,24 @@ class EditItem {
       color: color ?? this.color,
       fontFamily: fontFamily ?? this.fontFamily,
       selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
+      product: product ?? this.product,
     );
   }
 
   @override
   String toString() {
-    return 'EditItem(itemType: $type, position: $position, text: $text, fontSize: $fontSize, textAlign: $textAlign, textColor: $color, fontFamily: $fontFamily, selectedButtonShapeIndex: $selectedButtonShapeIndex)';
+    return 'EditItem(itemType: $type, position: $position, text: $text, fontSize: $fontSize, textAlign: $textAlign, textColor: $color, fontFamily: $fontFamily, selectedButtonShapeIndex: $selectedButtonShapeIndex, product: $product)';
   }
 
   @override
   bool operator ==(covariant EditItem other) {
     if (identical(this, other)) return true;
 
-    return other.type == type && other.position == position && other.text == text && other.fontSize == fontSize && other.textAlign == textAlign && other.color == color && other.fontFamily == fontFamily && other.selectedButtonShapeIndex == selectedButtonShapeIndex;
+    return other.type == type && other.position == position && other.text == text && other.fontSize == fontSize && other.textAlign == textAlign && other.color == color && other.fontFamily == fontFamily && other.selectedButtonShapeIndex == selectedButtonShapeIndex && other.product == product;
   }
 
   @override
   int get hashCode {
-    return type.hashCode ^ position.hashCode ^ text.hashCode ^ fontSize.hashCode ^ textAlign.hashCode ^ color.hashCode ^ fontFamily.hashCode ^ selectedButtonShapeIndex.hashCode;
+    return type.hashCode ^ position.hashCode ^ text.hashCode ^ fontSize.hashCode ^ textAlign.hashCode ^ color.hashCode ^ fontFamily.hashCode ^ selectedButtonShapeIndex.hashCode ^ product.hashCode;
   }
 }

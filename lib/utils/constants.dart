@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screens/model/product.dart';
+import 'package:screens/model/template.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../model/audience.dart';
 import '../model/editing_item.dart';
@@ -11,25 +14,14 @@ enum EditItemType { button, text, other }
 
 enum ProductType { product, location }
 
+List<Audience> audiences = [
+  Audience(title: 'Public', subTitle: 'Open To Everyone', icon: const Icon(Icons.person_outline), backgroundColor: Colors.blue),
+  Audience(title: 'Followers', subTitle: '6500 user', icon: const Icon(Icons.star, color: Colors.white), backgroundColor: Colors.greenAccent),
+  Audience(title: 'Registered Users', subTitle: '3300 user', icon: const Icon(Icons.wine_bar), backgroundColor: Colors.yellow),
+  Audience(title: 'Loyalty Member', subTitle: '600 user', icon: const Icon(Icons.favorite), backgroundColor: Colors.redAccent),
+];
+
 const fontFamilies = [
-  'OpenSans',
-  'Billabong',
-  'GrandHotel',
-  'Oswald',
-  'Quicksand',
-  'BeautifulPeople',
-  'BeautyMountains',
-  'BiteChocolate',
-  'BlackberryJam',
-  'BunchBlossoms',
-  'CinderelaRegular',
-  'Countryside',
-  'Halimun',
-  'LemonJelly',
-  'QuiteMagicalRegular',
-  'Tomatoes',
-  'TropicalAsianDemoRegular',
-  'VeganStyle',
   'Alegreya',
   'B612',
   'TitilliumWeb',
@@ -48,7 +40,7 @@ const fontFamilies = [
   'FrederickatheGreat',
   'ReenieBeanie',
   'BungeeShade',
-  'UnifrakturMaguntia'
+  'UnifrakturMaguntia',
 ];
 
 var buttonShapesIcons = [
@@ -193,38 +185,81 @@ class CButtonShape extends StatelessWidget {
   }
 }
 
-class CButton extends StatelessWidget {
-  const CButton({super.key, required this.selectedShapeIndex, required this.color, required this.fontFamily});
+class CButton extends StatefulWidget {
+  const CButton({
+    super.key,
+    required this.selectedShapeIndex,
+    required this.color,
+    required this.fontFamily,
+    required this.buttonText,
+    required this.fontSize,
+    this.enabled = true,
+    this.onChange,
+    required this.controller,
+  });
   final int selectedShapeIndex;
   final Color color;
   final String fontFamily;
+  final String buttonText;
+  final double fontSize;
+  final bool enabled;
+  final ValueChanged<String>? onChange;
+  final TextEditingController controller;
+
+  @override
+  State<CButton> createState() => _CButtonState();
+}
+
+class _CButtonState extends State<CButton> {
+  late TextEditingController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.controller;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return selectedShapeIndex == 3
+    return widget.selectedShapeIndex == 3
         ? Center(
             child: ClipPath(
               clipper: ButtonMessageShape(),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
-                height: 65,
                 width: screenSize.width * 0.8,
                 decoration: BoxDecoration(
-                  color: color,
+                  color: widget.color,
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: screenSize.height * 0.022),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Get Your Box Today!', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white)),
-                      const SizedBox(width: 10),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.0),
-                        child: VerticalDivider(width: 2, thickness: 2),
+                child: TextField(
+                  enabled: widget.enabled,
+                  textAlign: TextAlign.center,
+                  controller: controller,
+                  onChanged: widget.onChange,
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Colors.white,
+                        fontSize: widget.fontSize,
+                        fontFamily: widget.fontFamily,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
+                  cursorColor: Colors.white,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(
+                      left: 5,
+                      right: 5,
+                      bottom: widget.fontSize > 28 && widget.fontSize < 40
+                          ? screenSize.height * 0.04
+                          : widget.fontSize > 40
+                              ? screenSize.height * 0.1
+                              : screenSize.height * 0.015,
+                    ),
+                    fillColor: Colors.white,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    focusedErrorBorder: InputBorder.none,
                   ),
                 ),
               ),
@@ -233,30 +268,39 @@ class CButton extends StatelessWidget {
         : Center(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
-              height: 45,
               width: screenSize.width * 0.8,
               decoration: BoxDecoration(
-                color: color,
+                color: widget.color,
                 borderRadius: BorderRadius.circular(
-                  selectedShapeIndex == 0
+                  widget.selectedShapeIndex == 0
                       ? 0
-                      : selectedShapeIndex == 1
+                      : widget.selectedShapeIndex == 1
                           ? 8
                           : 999,
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.1, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FittedBox(
-                      child: Text('Get Your Box Today!', style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white, fontFamily: fontFamily, fontWeight: FontWeight.w500)),
+              child: TextField(
+                enabled: widget.enabled,
+                controller: controller,
+                onChanged: widget.onChange,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Colors.white,
+                      fontSize: widget.fontSize,
+                      fontFamily: widget.fontFamily,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(width: 10),
-                    const VerticalDivider(width: 2, thickness: 2, color: Colors.white),
-                  ],
+                cursorColor: Colors.white,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  fillColor: Colors.white,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                  focusedErrorBorder: InputBorder.none,
                 ),
               ),
             ),
@@ -286,16 +330,17 @@ class ButtonMessageShape extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper oldClipper) => true;
 }
 
-class EditItems extends StatefulWidget {
-  const EditItems({super.key, required this.items, this.fromTemplateScreen = false});
+class EditItemsWithOutTemplate extends StatefulWidget {
+  const EditItemsWithOutTemplate({super.key, required this.items, this.fromTemplateScreen = false, required this.onDoubleTap});
   final List<EditItem> items;
   final bool fromTemplateScreen;
+  final void Function(EditItem item) onDoubleTap;
 
   @override
-  State<EditItems> createState() => _EditItemsState();
+  State<EditItemsWithOutTemplate> createState() => _EditItemsWithOutTemplateState();
 }
 
-class _EditItemsState extends State<EditItems> {
+class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -317,17 +362,42 @@ class _EditItemsState extends State<EditItems> {
                           item.position = details.offset;
                         });
                       },
-                      child: ItemTextWidget(item: item),
+                      child: GestureDetector(
+                          onDoubleTap: () {
+                            widget.onDoubleTap(item);
+                          },
+                          child: ItemTextWidget(item: item)),
                     )
                   : Draggable(
-                      feedback: CButton(color: item.color!, fontFamily: item.fontFamily!, selectedShapeIndex: item.selectedButtonShapeIndex!),
+                      feedback: CButton(
+                        enabled: false,
+                        color: item.color!,
+                        fontFamily: item.fontFamily!,
+                        selectedShapeIndex: item.selectedButtonShapeIndex!,
+                        buttonText: item.text!,
+                        fontSize: item.fontSize!,
+                        controller: TextEditingController(text: item.text),
+                      ),
                       childWhenDragging: const Text(''),
                       onDragEnd: (details) {
                         setState(() {
                           item.position = details.offset;
                         });
                       },
-                      child: CButton(color: item.color!, fontFamily: item.fontFamily!, selectedShapeIndex: item.selectedButtonShapeIndex!),
+                      child: GestureDetector(
+                        onDoubleTap: () {
+                          widget.onDoubleTap(item);
+                        },
+                        child: CButton(
+                          enabled: false,
+                          color: item.color!,
+                          fontFamily: item.fontFamily!,
+                          selectedShapeIndex: item.selectedButtonShapeIndex!,
+                          buttonText: item.text!,
+                          fontSize: item.fontSize!,
+                          controller: TextEditingController(text: item.text),
+                        ),
+                      ),
                     ),
             ),
           )
@@ -336,21 +406,27 @@ class _EditItemsState extends State<EditItems> {
   }
 }
 
-class ItemTextWidget extends StatelessWidget {
+class ItemTextWidget extends StatefulWidget {
   const ItemTextWidget({super.key, required this.item});
   final EditItem item;
+
+  @override
+  State<ItemTextWidget> createState() => _ItemTextWidgetState();
+}
+
+class _ItemTextWidgetState extends State<ItemTextWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: item.text!.length * item.fontSize! > screenSize.width ? screenSize.width * 0.7 : null,
+      width: widget.item.text!.length * widget.item.fontSize! > screenSize.width ? screenSize.width * 0.7 : null,
       child: Text(
-        item.text!,
-        textAlign: item.textAlign,
+        widget.item.text!,
+        textAlign: widget.item.textAlign,
         softWrap: true,
         style: TextStyle(
-          fontSize: item.fontSize,
-          color: item.color,
-          fontFamily: item.fontFamily,
+          fontSize: widget.item.fontSize,
+          color: widget.item.color,
+          fontFamily: widget.item.fontFamily,
         ),
       ),
     );
@@ -425,9 +501,77 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-List<Audience> audiences = [
-  Audience(title: 'Public', subTitle: 'Open To Everyone', icon: const Icon(Icons.person_outline), backgroundColor: Colors.blue),
-  Audience(title: 'Followers', subTitle: '6500 user', icon: const Icon(Icons.star, color: Colors.white), backgroundColor: Colors.greenAccent),
-  Audience(title: 'Registered Users', subTitle: '3300 user', icon: const Icon(Icons.wine_bar), backgroundColor: Colors.yellow),
-  Audience(title: 'Loyalty Member', subTitle: '600 user', icon: const Icon(Icons.favorite), backgroundColor: Colors.redAccent),
-];
+class EditItemsWithTemplate extends StatefulWidget {
+  const EditItemsWithTemplate({super.key, required this.items, required this.cTemplate});
+  final List<EditItem> items;
+  final CTemplate cTemplate;
+
+  @override
+  State<EditItemsWithTemplate> createState() => _EditItemsWithTemplateState();
+}
+
+class _EditItemsWithTemplateState extends State<EditItemsWithTemplate> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, bottom: 10),
+      child: Align(
+        alignment: widget.cTemplate.alignment,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: widget.items.length,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            var item = widget.items[index];
+            switch (item.type) {
+              case EditItemType.text:
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: ItemTextWidget(item: item),
+                );
+              default:
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: CButton(
+                    color: item.color!,
+                    fontFamily: item.fontFamily!,
+                    selectedShapeIndex: item.selectedButtonShapeIndex!,
+                    buttonText: item.text!,
+                    fontSize: item.fontSize!,
+                    controller: TextEditingController(text: item.text),
+                  ),
+                );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+Widget verticalSlider(double fontSize, ValueChanged onChange) {
+  return Align(
+    alignment: Alignment.centerRight,
+    child: SizedBox(
+      width: 20,
+      height: screenSize.height * 0.35,
+      child: SfSlider.vertical(
+        min: 12,
+        max: 60,
+        value: fontSize,
+        activeColor: const Color(0xFF919191),
+        inactiveColor: Colors.white,
+        thumbIcon: SizedBox(
+          child: Center(
+            child: Text(
+              fontSize.toInt().toString(),
+              style: const TextStyle(color: Colors.white, fontSize: 10),
+            ),
+          ),
+        ),
+        showLabels: false,
+        onChanged: onChange,
+      ),
+    ),
+  );
+}

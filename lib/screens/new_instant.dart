@@ -1,12 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screens/screens/audiance_screen.dart';
+import 'package:screens/screens/sudio_main.dart';
 import 'package:screens/utils/constants.dart';
 
+import '../model/editing_item.dart';
+
 class NewInstantScreen extends StatefulWidget {
-  const NewInstantScreen({super.key, required this.imageFile});
+  const NewInstantScreen({super.key, required this.imageFile, required this.items});
   final File imageFile;
+  final List<EditItem> items;
 
   @override
   State<NewInstantScreen> createState() => _NewInstantScreenState();
@@ -75,7 +80,79 @@ class _NewInstantScreenState extends State<NewInstantScreen> {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    // Todo implement Functionality
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog.adaptive(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              splashColor: Colors.transparent,
+                              onTap: () => Navigator.pop(context),
+                              child: SvgPicture.asset(
+                                'assets/icons/cancel_without_background.svg',
+                                height: 25,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  SvgPicture.asset(
+                                    'assets/icons/done_bg.svg',
+                                    height: 110,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  const SizedBox(height: 30),
+                                  Text(
+                                    'Instant Page is Published.',
+                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 20),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    'Your Instant Page is Published.',
+                                    style: Theme.of(context).textTheme.titleSmall!.copyWith(color: const Color(0xff0CC67C)),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  Center(
+                                    child: ElevatedButton(
+                                      style: ButtonStyle(
+                                        backgroundColor: const WidgetStatePropertyAll(Color(0xFF0CC67C)),
+                                        shape: WidgetStatePropertyAll(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudioMain(imageFile: widget.imageFile, items: widget.items)));
+                                      },
+                                      child: const Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 12),
+                                          child: Text(
+                                            'Confirm',
+                                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16),

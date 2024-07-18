@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,10 +17,10 @@ import 'package:screens/model/product.dart';
 import 'package:screens/model/template.dart';
 import 'package:screens/screens/instant/insert_button/screen.dart';
 import 'package:screens/screens/instant/insert_text/screen.dart';
-import 'package:screens/screens/sudio_main.dart';
 import 'package:screens/screens/tags_screen.dart';
 import '../../../model/editing_item.dart';
 import '../../../utils/constants.dart';
+import '../../new_instant.dart';
 import '../insert_template/screen.dart';
 
 final GlobalKey repaintBoundaryKey = GlobalKey();
@@ -82,28 +84,64 @@ class _EditScreenState extends State<EditScreen> {
                             ),
                           ),
                         if (cTemplate != null)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10, bottom: 10),
-                            child: Align(
-                              alignment: cTemplate!.alignment,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: items
-                                    .map(
-                                      (item) => item.type == EditItemType.text
-                                          ? ItemTextWidget(item: item)
-                                          : item.type == EditItemType.button
-                                              ? CButton(color: item.color!, fontFamily: item.fontFamily!, selectedShapeIndex: item.selectedButtonShapeIndex!)
-                                              : Container(),
-                                    )
-                                    .toList(),
-                              ),
-                            ),
-                          )
+                          EditItemsWithTemplate(items: items, cTemplate: cTemplate!)
                         else
                           SizedBox(
                             width: screenSize.width,
-                            child: EditItems(items: items),
+                            child: EditItemsWithOutTemplate(
+                              items: items,
+                              onDoubleTap: (item) async {
+                                int indexOfItem = items.indexOf(items.firstWhere((element) => element == item));
+                                if (item.type == EditItemType.text) {
+                                  setState(() {
+                                    insertingText = true;
+                                  });
+                                  showGeneralDialog(
+                                      context: context,
+                                      pageBuilder: (context, animation, secondaryAnimation) => InsertTextScreen(
+                                            controller: TextEditingController(text: item.text),
+                                            fontSize: item.fontSize!,
+                                            selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                                            selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
+                                          )).then((returnValue) {
+                                    if (returnValue != null) {
+                                      items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
+                                    } else {
+                                      items.insert(indexOfItem, item);
+                                    }
+                                    setState(() {
+                                      insertingText = false;
+                                    });
+                                  });
+                                  items.removeAt(indexOfItem);
+                                } else {
+                                  setState(() {
+                                    insertingButton = true;
+                                  });
+                                  showGeneralDialog(
+                                      context: context,
+                                      pageBuilder: (context, animation, secondaryAnimation) => InsertButtonScreen(
+                                            product: item.product!,
+                                            buttonText: item.text!,
+                                            selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                                            selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
+                                            fontSize: item.fontSize!,
+                                            selectedShapeIndex: item.selectedButtonShapeIndex!,
+                                          )).then((returnValue) {
+                                    if (returnValue != null) {
+                                      log(returnValue.toString());
+                                      items.insert(indexOfItem, (returnValue as EditItem).copyWith(position: item.position));
+                                    } else {
+                                      items.insert(indexOfItem, item);
+                                    }
+                                    setState(() {
+                                      insertingButton = false;
+                                    });
+                                  });
+                                  items.removeAt(indexOfItem);
+                                }
+                              },
+                            ),
                           ),
                       ],
                     );
@@ -120,7 +158,7 @@ class _EditScreenState extends State<EditScreen> {
                           onTap: () async {
                             await Permission.storage.request();
                             await Permission.manageExternalStorage.request();
-                            var directory = await Directory('/storage/emulated/0/Pictures').create(recursive: true);
+                            var directory = await Directory('/storage/emulated/0/Pictures/Screens').create(recursive: true);
                             await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true);
                           },
                           child: Container(
@@ -142,11 +180,7 @@ class _EditScreenState extends State<EditScreen> {
                             try {
                               await _prepareImage(directoryPath: (await getTemporaryDirectory()).path, title: 'Processing Image').then((mediaPath) {
                                 if (mediaPath != null) {
-                                  showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (context) => SizedBox(height: screenSize.height, child: StudioMain(imageFile: File(mediaPath), items: items)),
-                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewInstantScreen(imageFile: File(mediaPath), items: items)));
                                 } else {
                                   showDialog(
                                     context: context,
@@ -245,7 +279,11 @@ class _EditScreenState extends State<EditScreen> {
                             setState(() {
                               insertingText = true;
                             });
-                            await showGeneralDialog(context: context, pageBuilder: (context, animation, secondaryAnimation) => const InsertTextScreen()).then((returnValue) {
+                            await showGeneralDialog(
+                                context: context,
+                                pageBuilder: (context, animation, secondaryAnimation) => InsertTextScreen(
+                                      controller: TextEditingController(),
+                                    )).then((returnValue) {
                               if (returnValue != null) {
                                 items.add(returnValue as EditItem);
                               }

@@ -1,29 +1,35 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screens/model/editing_item.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants.dart';
 
 class InsertTextScreen extends StatefulWidget {
-  const InsertTextScreen({super.key});
-
+  const InsertTextScreen({super.key, required this.controller, this.fontSize = 18, this.selectedColorIndex = 0, this.selectedFontIndex = 0});
+  final TextEditingController controller;
+  final double fontSize;
+  final int selectedColorIndex;
+  final int selectedFontIndex;
   @override
   State<InsertTextScreen> createState() => _InsertTextScreenState();
 }
 
 class _InsertTextScreenState extends State<InsertTextScreen> {
   late FocusNode focusNode;
-  var controller = TextEditingController();
-  double fontSize = 18;
-  var selectedColorIndex = 0;
-  var selectedFontIndex = 0;
+  late int selectedColorIndex;
+  late int selectedFontIndex;
   bool colorPaletSelected = true;
+  late TextEditingController controller;
+  late double fontSize;
   final TextAlign textAlign = TextAlign.center;
 
   @override
   void initState() {
     focusNode = FocusNode();
+    controller = widget.controller;
+    fontSize = widget.fontSize;
+    selectedColorIndex = widget.selectedColorIndex;
+    selectedFontIndex = widget.selectedFontIndex;
     super.initState();
   }
 
@@ -36,12 +42,18 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           textField(),
-          verticalSlider(),
+          verticalSlider(
+            fontSize,
+            (newFontSize) {
+              setState(() {
+                fontSize = newFontSize;
+              });
+            },
+          ),
           if (colorPaletSelected)
             CColors(
               index: (index) {
@@ -98,37 +110,6 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget verticalSlider() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: SizedBox(
-        width: 20,
-        height: screenSize.height * 0.35,
-        child: SfSlider.vertical(
-          min: 12,
-          max: 60,
-          value: fontSize,
-          activeColor: const Color(0xFF919191),
-          inactiveColor: Colors.white,
-          thumbIcon: SizedBox(
-            child: Center(
-              child: Text(
-                fontSize.toInt().toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 10),
-              ),
-            ),
-          ),
-          showLabels: false,
-          onChanged: (newFontSize) {
-            setState(() {
-              fontSize = newFontSize;
-            });
-          },
         ),
       ),
     );

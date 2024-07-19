@@ -105,7 +105,7 @@ class _EditScreenState extends State<EditScreen> {
                           onTap: () async {
                             await Permission.storage.request();
                             await Permission.manageExternalStorage.request();
-                            var directory = await Directory('/storage/emulated/0/Pictures/Screens').create(recursive: true);
+                            var directory = await Directory('/storage/emulated/0/DCIM/Camera').create(recursive: true);
                             await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true);
                           },
                           child: Container(

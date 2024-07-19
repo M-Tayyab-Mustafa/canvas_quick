@@ -14,6 +14,7 @@ class EditItem {
   final EditItemType type;
   int? selectedButtonShapeIndex;
   Product? product;
+  bool? isTextBackgroundEnabled;
 
   EditItem({
     required this.type,
@@ -25,6 +26,7 @@ class EditItem {
     this.fontFamily,
     this.selectedButtonShapeIndex,
     this.product,
+    this.isTextBackgroundEnabled,
   });
 
   EditItem copyWith({
@@ -37,6 +39,7 @@ class EditItem {
     String? fontFamily,
     int? selectedButtonShapeIndex,
     Product? product,
+    bool? isTextBackgroundEnabled,
   }) {
     return EditItem(
       type: type ?? this.type,
@@ -48,23 +51,24 @@ class EditItem {
       fontFamily: fontFamily ?? this.fontFamily,
       selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
       product: product ?? this.product,
+      isTextBackgroundEnabled: isTextBackgroundEnabled ?? this.isTextBackgroundEnabled,
     );
   }
 
   @override
   String toString() {
-    return 'EditItem(itemType: $type, position: $position, text: $text, fontSize: $fontSize, textAlign: $textAlign, textColor: $color, fontFamily: $fontFamily, selectedButtonShapeIndex: $selectedButtonShapeIndex, product: $product)';
+    return 'EditItem(itemType: $type, position: $position, text: $text, fontSize: $fontSize, textAlign: $textAlign, textColor: $color, fontFamily: $fontFamily, selectedButtonShapeIndex: $selectedButtonShapeIndex, product: $product, isTextBackgroundEnabled: $isTextBackgroundEnabled)';
   }
 
   @override
   bool operator ==(covariant EditItem other) {
     if (identical(this, other)) return true;
 
-    return other.type == type && other.position == position && other.text == text && other.fontSize == fontSize && other.textAlign == textAlign && other.color == color && other.fontFamily == fontFamily && other.selectedButtonShapeIndex == selectedButtonShapeIndex && other.product == product;
+    return other.type == type && other.position == position && other.text == text && other.fontSize == fontSize && other.textAlign == textAlign && other.color == color && other.fontFamily == fontFamily && other.selectedButtonShapeIndex == selectedButtonShapeIndex && other.product == product && other.isTextBackgroundEnabled == isTextBackgroundEnabled;
   }
 
   @override
   int get hashCode {
-    return type.hashCode ^ position.hashCode ^ text.hashCode ^ fontSize.hashCode ^ textAlign.hashCode ^ color.hashCode ^ fontFamily.hashCode ^ selectedButtonShapeIndex.hashCode ^ product.hashCode;
+    return type.hashCode ^ position.hashCode ^ text.hashCode ^ fontSize.hashCode ^ textAlign.hashCode ^ color.hashCode ^ fontFamily.hashCode ^ selectedButtonShapeIndex.hashCode ^ product.hashCode ^ isTextBackgroundEnabled.hashCode;
   }
 }

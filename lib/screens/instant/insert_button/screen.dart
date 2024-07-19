@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:screens/model/editing_item.dart';
 import 'package:screens/model/product.dart';
+import 'package:screens/screens/products_screen.dart';
 import 'package:screens/utils/constants.dart';
 
 class InsertButtonScreen extends StatefulWidget {
@@ -97,8 +98,33 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                       });
                     },
                     selectedColorIndex: selectedColorIndex),
-              ProductCard(
-                product: widget.product,
+              GestureDetector(
+                onTap: () async {
+                  await Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductsScreen())).then(
+                    (value) {
+                      if (value != null) {
+                        log(value.toString());
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => InsertButtonScreen(
+                        //       product: ((value as EditItem).product!),
+                        //       buttonText: buttonText,
+                        //       colorPaletIndex: colorPaletIndex,
+                        //       fontSize: fontSize,
+                        //       selectedColorIndex: selectedColorIndex,
+                        //       selectedFontIndex: selectedFontIndex,
+                        //       selectedShapeIndex: selectedShapeIndex,
+                        //     ),
+                        //   ),
+                        // );
+                      }
+                    },
+                  );
+                },
+                child: ProductCard(
+                  product: widget.product,
+                ),
               ),
               topMenu(),
               verticalSlider(

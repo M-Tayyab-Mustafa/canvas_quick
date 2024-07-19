@@ -463,12 +463,8 @@ class _StudioMainState extends State<StudioMain> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.white,
-                                    builder: (context) => SizedBox(height: screenSize.height, child: const ImagesScreen()),
-                                  );
+                                  Navigator.popUntil(context, (route) => route.isFirst);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ImagesScreen()));
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screens/model/product.dart';
 import 'package:screens/model/template.dart';
@@ -356,6 +355,8 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
               left: widget.fromTemplateScreen ? item.position.dx - screenSize.width * 0.06 : item.position.dx,
               child: item.type == EditItemType.text
                   ? Draggable(
+                      ignoringFeedbackSemantics: false,
+                      rootOverlay: true,
                       feedback: ItemTextWidget(item: item),
                       childWhenDragging: const Text(''),
                       onDragEnd: (details) {
@@ -363,7 +364,7 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
                           item.position = details.offset;
                         });
                       },
-                      child: GestureDetector(
+                      child: InkWell(
                           onLongPress: () {
                             if (widget.onLongPress != null) {
                               widget.onLongPress!(item);
@@ -392,7 +393,7 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
                           item.position = details.offset;
                         });
                       },
-                      child: GestureDetector(
+                      child: InkWell(
                         onLongPress: () {
                           if (widget.onLongPress != null) {
                             widget.onLongPress!(item);
@@ -438,11 +439,7 @@ class _ItemTextWidgetState extends State<ItemTextWidget> {
         widget.item.text!,
         textAlign: widget.item.textAlign,
         softWrap: true,
-        style: TextStyle(
-          fontSize: widget.item.fontSize,
-          color: widget.item.color,
-          fontFamily: widget.item.fontFamily,
-        ),
+        style: TextStyle(fontSize: widget.item.fontSize, color: widget.item.color, fontFamily: widget.item.fontFamily, backgroundColor: widget.item.isTextBackgroundEnabled  == true ?   Colors.white:Colors.transparent),
       ),
     );
   }

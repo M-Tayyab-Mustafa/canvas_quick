@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:screens/screens/instant/edit/screen.dart';
 
@@ -76,12 +77,9 @@ class _ImagesScreenState extends State<ImagesScreen> {
                         setState(() {
                           isPickingColor = false;
                         });
+                        await Permission.storage.request();
+                        await Permission.manageExternalStorage.request();
                         _getImages();
-                        await ImagePicker().pickImage(source: ImageSource.gallery).then((imageFile) {
-                          if (imageFile != null) {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => EditScreen(imageFile: File(imageFile.path)))).whenComplete(() => _getImages());
-                          }
-                        });
                       },
                       child: Container(
                         width: screenSize.width * .24,
@@ -216,11 +214,19 @@ class _ImagesScreenState extends State<ImagesScreen> {
   }
 
   _getImages() async {
-    var directory = Directory('/storage/emulated/0/Pictures/Screens');
+    var directory = Directory('/storage/emulated/0/DCIM/Camera');
+
     if (await directory.exists()) {
-      setState(() {
-        fileImages = directory.listSync().map((e) => e.path).toList();
-      });
+      fileImages = directory
+          .listSync()
+          .where(
+            (file) => file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png') || file.path.endsWith('.gif'),
+          )
+          .toList()
+          .map((e) => e.path)
+          .toList();
+
+      setState(() {});
     }
   }
 }

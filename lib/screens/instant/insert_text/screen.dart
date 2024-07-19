@@ -19,6 +19,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   late int selectedColorIndex;
   late int selectedFontIndex;
   bool colorPaletSelected = true;
+  bool isTextBackgroundEnabled = false;
   late TextEditingController controller;
   late double fontSize;
   final TextAlign textAlign = TextAlign.center;
@@ -99,9 +100,9 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               autofocus: true,
               maxLines: null,
               textAlign: textAlign,
-              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex]),
+              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: !isTextBackgroundEnabled ? Colors.transparent : Colors.white),
               decoration: InputDecoration(
-                hintStyle: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex]),
+                hintStyle: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: !isTextBackgroundEnabled ? Colors.transparent : Colors.white),
                 border: InputBorder.none,
                 errorBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
@@ -163,6 +164,22 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
                   child: SvgPicture.asset('assets/icons/color_palete.svg'),
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isTextBackgroundEnabled = !isTextBackgroundEnabled;
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: !isTextBackgroundEnabled ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
+                  child: const Icon(
+                    Icons.text_fields,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
           GestureDetector(
@@ -177,6 +194,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
                   position: Offset((screenSize.width / 2), screenSize.height / 2),
+                  isTextBackgroundEnabled: isTextBackgroundEnabled,
                 ),
               );
             },

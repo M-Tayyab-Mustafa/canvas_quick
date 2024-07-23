@@ -13,6 +13,11 @@ enum EditItemType { button, text, other }
 
 enum ProductType { product, location }
 
+List<CTemplate> templates = [
+  CTemplate(alignment: Alignment.bottomLeft, textAlign: TextAlign.left, name: 'Vermont', position: Offset(16, screenSize.height - (screenSize.height * 0.41))),
+  CTemplate(alignment: Alignment.center, textAlign: TextAlign.center, name: 'Minimalist', position: Offset(0, screenSize.height)),
+];
+
 List<Audience> audiences = [
   Audience(title: 'Public', subTitle: 'Open To Everyone', icon: const Icon(Icons.person_outline), backgroundColor: Colors.blue),
   Audience(title: 'Followers', subTitle: '6500 user', icon: const Icon(Icons.star, color: Colors.white), backgroundColor: Colors.greenAccent),
@@ -330,9 +335,8 @@ class ButtonMessageShape extends CustomClipper<Path> {
 }
 
 class EditItemsWithOutTemplate extends StatefulWidget {
-  const EditItemsWithOutTemplate({super.key, required this.items, this.fromTemplateScreen = false, this.onDoubleTap, this.onLongPress});
+  const EditItemsWithOutTemplate({super.key, required this.items, this.onDoubleTap, this.onLongPress});
   final List<EditItem> items;
-  final bool fromTemplateScreen;
   final void Function(EditItem item)? onDoubleTap;
   final void Function(EditItem item)? onLongPress;
 
@@ -343,105 +347,93 @@ class EditItemsWithOutTemplate extends StatefulWidget {
 class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: widget.items
-          .map(
-            (item) => Positioned(
-              top: widget.fromTemplateScreen
-                  ? item.position.dy > screenSize.height / 2
-                      ? item.position.dy - screenSize.height * 0.263
-                      : item.position.dy
-                  : item.position.dy,
-              left: widget.fromTemplateScreen ? item.position.dx - screenSize.width * 0.06 : item.position.dx,
-              child: item.type == EditItemType.text
-                  ? Draggable(
-                      ignoringFeedbackSemantics: false,
-                      rootOverlay: true,
-                      feedback: ItemTextWidget(item: item),
-                      childWhenDragging: const Text(''),
-                      onDragEnd: (details) {
-                        setState(() {
-                          item.position = details.offset;
-                        });
-                      },
-                      child: InkWell(
-                          onLongPress: () {
-                            if (widget.onLongPress != null) {
-                              widget.onLongPress!(item);
-                            }
+    return LayoutBuilder(builder: (context, constraints) {
+      return Stack(
+        children: widget.items
+            .map((item) => Positioned(
+                  top: item.position.dy,
+                  left: item.position.dx,
+                  child: item.type == EditItemType.text
+                      ? Draggable(
+                          ignoringFeedbackSemantics: false,
+                          rootOverlay: true,
+                          feedback: SizedBox(
+                            width: constraints.maxWidth * 0.8,
+                            child: Text(
+                              item.text!,
+                              textAlign: item.textAlign,
+                              style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.isTextBackgroundEnabled == true ? Colors.white : Colors.transparent),
+                            ),
+                          ),
+                          childWhenDragging: const Text(''),
+                          onDragEnd: (details) {
+                            setState(() {
+                              item.position = details.offset;
+                            });
                           },
-                          onDoubleTap: () {
-                            if (widget.onDoubleTap != null) {
-                              widget.onDoubleTap!(item);
-                            }
+                          child: SizedBox(
+                            width: constraints.maxWidth * 0.8,
+                            child: InkWell(
+                              onLongPress: () {
+                                if (widget.onLongPress != null) {
+                                  widget.onLongPress!(item);
+                                }
+                              },
+                              onDoubleTap: () {
+                                if (widget.onDoubleTap != null) {
+                                  widget.onDoubleTap!(item);
+                                }
+                              },
+                              child: Text(
+                                item.text!,
+                                textAlign: item.textAlign,
+                                style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.isTextBackgroundEnabled == true ? Colors.white : Colors.transparent),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Draggable(
+                          feedback: CButton(
+                            enabled: false,
+                            color: item.color!,
+                            fontFamily: item.fontFamily!,
+                            selectedShapeIndex: item.selectedButtonShapeIndex!,
+                            buttonText: item.text!,
+                            fontSize: item.fontSize!,
+                            controller: TextEditingController(text: item.text),
+                          ),
+                          childWhenDragging: const Text(''),
+                          onDragEnd: (details) {
+                            setState(() {
+                              item.position = details.offset;
+                            });
                           },
-                          child: ItemTextWidget(item: item)),
-                    )
-                  : Draggable(
-                      feedback: CButton(
-                        enabled: false,
-                        color: item.color!,
-                        fontFamily: item.fontFamily!,
-                        selectedShapeIndex: item.selectedButtonShapeIndex!,
-                        buttonText: item.text!,
-                        fontSize: item.fontSize!,
-                        controller: TextEditingController(text: item.text),
-                      ),
-                      childWhenDragging: const Text(''),
-                      onDragEnd: (details) {
-                        setState(() {
-                          item.position = details.offset;
-                        });
-                      },
-                      child: InkWell(
-                        onLongPress: () {
-                          if (widget.onLongPress != null) {
-                            widget.onLongPress!(item);
-                          }
-                        },
-                        onDoubleTap: () {
-                          if (widget.onDoubleTap != null) {
-                            widget.onDoubleTap!(item);
-                          }
-                        },
-                        child: CButton(
-                          enabled: false,
-                          color: item.color!,
-                          fontFamily: item.fontFamily!,
-                          selectedShapeIndex: item.selectedButtonShapeIndex!,
-                          buttonText: item.text!,
-                          fontSize: item.fontSize!,
-                          controller: TextEditingController(text: item.text),
+                          child: InkWell(
+                            onLongPress: () {
+                              if (widget.onLongPress != null) {
+                                widget.onLongPress!(item);
+                              }
+                            },
+                            onDoubleTap: () {
+                              if (widget.onDoubleTap != null) {
+                                widget.onDoubleTap!(item);
+                              }
+                            },
+                            child: CButton(
+                              enabled: false,
+                              color: item.color!,
+                              fontFamily: item.fontFamily!,
+                              selectedShapeIndex: item.selectedButtonShapeIndex!,
+                              buttonText: item.text!,
+                              fontSize: item.fontSize!,
+                              controller: TextEditingController(text: item.text),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-            ),
-          )
-          .toList(),
-    );
-  }
-}
-
-class ItemTextWidget extends StatefulWidget {
-  const ItemTextWidget({super.key, required this.item});
-  final EditItem item;
-
-  @override
-  State<ItemTextWidget> createState() => _ItemTextWidgetState();
-}
-
-class _ItemTextWidgetState extends State<ItemTextWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.item.text!.length * widget.item.fontSize! > screenSize.width ? screenSize.width * 0.7 : null,
-      child: Text(
-        widget.item.text!,
-        textAlign: widget.item.textAlign,
-        softWrap: true,
-        style: TextStyle(fontSize: widget.item.fontSize, color: widget.item.color, fontFamily: widget.item.fontFamily, backgroundColor: widget.item.isTextBackgroundEnabled  == true ?   Colors.white:Colors.transparent),
-      ),
-    );
+                ))
+            .toList(),
+      );
+    });
   }
 }
 
@@ -507,79 +499,6 @@ class ProductCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class EditItemsWithTemplate extends StatefulWidget {
-  const EditItemsWithTemplate({super.key, required this.items, required this.cTemplate, this.onDoubleTap, this.onLongPress});
-  final List<EditItem> items;
-  final CTemplate cTemplate;
-  final void Function(EditItem item)? onDoubleTap;
-  final void Function(EditItem item)? onLongPress;
-
-  @override
-  State<EditItemsWithTemplate> createState() => _EditItemsWithTemplateState();
-}
-
-class _EditItemsWithTemplateState extends State<EditItemsWithTemplate> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, bottom: 10),
-      child: Align(
-        alignment: widget.cTemplate.alignment,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.items.length,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            var item = widget.items[index];
-            switch (item.type) {
-              case EditItemType.text:
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: GestureDetector(
-                      onLongPress: () {
-                        if (widget.onLongPress != null) {
-                          widget.onLongPress!(item);
-                        }
-                      },
-                      onDoubleTap: () {
-                        if (widget.onDoubleTap != null) {
-                          widget.onDoubleTap!(item);
-                        }
-                      },
-                      child: ItemTextWidget(item: item)),
-                );
-              default:
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: GestureDetector(
-                    onLongPress: () {
-                      if (widget.onLongPress != null) {
-                        widget.onLongPress!(item);
-                      }
-                    },
-                    onDoubleTap: () {
-                      if (widget.onDoubleTap != null) {
-                        widget.onDoubleTap!(item);
-                      }
-                    },
-                    child: CButton(
-                      color: item.color!,
-                      fontFamily: item.fontFamily!,
-                      selectedShapeIndex: item.selectedButtonShapeIndex!,
-                      buttonText: item.text!,
-                      fontSize: item.fontSize!,
-                      controller: TextEditingController(text: item.text),
-                    ),
-                  ),
-                );
-            }
-          },
         ),
       ),
     );

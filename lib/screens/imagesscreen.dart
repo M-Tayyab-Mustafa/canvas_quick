@@ -77,6 +77,7 @@ class _ImagesScreenState extends State<ImagesScreen> {
                         setState(() {
                           isPickingColor = false;
                         });
+                        Permission.photos.request();
                         await Permission.storage.request();
                         await Permission.manageExternalStorage.request();
                         _getImages();

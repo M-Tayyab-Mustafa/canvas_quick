@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screens/model/editing_item.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,8 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   late TextEditingController controller;
   late double fontSize;
   final TextAlign textAlign = TextAlign.center;
+  GlobalKey key = GlobalKey();
+  String? text;
 
   @override
   void initState() {
@@ -47,6 +50,18 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
       body: Stack(
         children: [
           textField(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Center(
+              child: RepaintBoundary(
+                key: key,
+                child: Text(
+                  text ?? '',
+                  style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex]),
+                ),
+              ),
+            ),
+          ),
           verticalSlider(
             fontSize,
             (newFontSize) {
@@ -184,17 +199,25 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
           ),
           GestureDetector(
             onTap: () {
+              text = controller.text;
+              setState(() {});
+              RenderRepaintBoundary? boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
               Navigator.pop(
                 context,
                 EditItem(
+                  key: key,
                   type: EditItemType.text,
                   text: controller.text,
                   fontSize: fontSize,
                   textAlign: textAlign,
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
-                  position: Offset((screenSize.width / 2), screenSize.height / 2),
+                  position: Offset(
+                    (screenSize.width * 0.5) - (screenSize.width * 0.8) / 2,
+                    (screenSize.height * 0.5) - (boundary!.size.height * 0.5),
+                  ),
                   isTextBackgroundEnabled: isTextBackgroundEnabled,
+                  size: boundary.size,
                 ),
               );
             },

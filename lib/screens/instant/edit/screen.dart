@@ -3,18 +3,15 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:screens/model/product.dart';
-import 'package:screens/model/template.dart';
 import 'package:screens/screens/instant/insert_button/screen.dart';
 import 'package:screens/screens/instant/insert_text/screen.dart';
 import 'package:screens/screens/tags_screen.dart';
@@ -43,7 +40,6 @@ class _EditScreenState extends State<EditScreen> {
   bool insertingButton = false;
   bool insertingTemplate = false;
   File? imageFile;
-  CTemplate? cTemplate;
 
   @override
   void initState() {
@@ -83,13 +79,11 @@ class _EditScreenState extends State<EditScreen> {
                               width: constraints.maxWidth,
                             ),
                           ),
-                        if (cTemplate != null)
-                          EditItemsWithTemplate(items: items, cTemplate: cTemplate!, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item))
-                        else
-                          SizedBox(
-                            width: screenSize.width,
-                            child: EditItemsWithOutTemplate(items: items, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item)),
-                          ),
+                        SizedBox(
+                          width: screenSize.width,
+                          height: screenSize.height,
+                          child: EditItemsWithOutTemplate(items: items, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item)),
+                        ),
                       ],
                     );
                   }),
@@ -292,17 +286,17 @@ class _EditScreenState extends State<EditScreen> {
                               insertingTemplate = true;
                             });
                             await showGeneralDialog(
-                                context: context,
-                                pageBuilder: (context, animation, secondaryAnimation) => InsertTemplate(
-                                      items: items,
-                                      backgroundColor: widget.backgroundColor,
-                                      imageFile: imageFile,
-                                      cTemplate: cTemplate,
-                                    )).then((returnValue) {
+                              context: context,
+                              pageBuilder: (context, animation, secondaryAnimation) => InsertTemplate(
+                                items: items,
+                                backgroundColor: widget.backgroundColor,
+                                imageFile: imageFile,
+                              ),
+                            ).then((returnValue) {
+                              if (returnValue != null) {
+                                items = returnValue as List<EditItem>;
+                              }
                               setState(() {
-                                if (returnValue != null) {
-                                  cTemplate = returnValue as CTemplate;
-                                }
                                 insertingTemplate = false;
                               });
                             });

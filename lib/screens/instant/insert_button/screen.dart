@@ -5,15 +5,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:screens/model/editing_item.dart';
 import 'package:screens/model/product.dart';
-import 'package:screens/screens/products_screen.dart';
 import 'package:screens/utils/constants.dart';
+
+import '../../tags_screen.dart';
 
 class InsertButtonScreen extends StatefulWidget {
   const InsertButtonScreen({
     super.key,
     required this.product,
-    this.buttonText = 'Get Your Box Today',
-    this.selectedColorIndex = 2,
+    this.buttonText = '',
+    this.selectedColorIndex = 4,
     this.selectedFontIndex = 0,
     this.selectedShapeIndex = 2,
     this.colorPaletIndex = 2,
@@ -37,6 +38,7 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
   late int colorPaletIndex;
   late String buttonText;
   late double fontSize;
+  late Product product;
   GlobalKey key = GlobalKey();
 
   @override
@@ -48,6 +50,7 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
     colorPaletIndex = widget.colorPaletIndex;
     buttonText = widget.buttonText;
     fontSize = widget.fontSize;
+    product = widget.product;
   }
 
   @override
@@ -118,31 +121,21 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                     selectedColorIndex: selectedColorIndex),
               GestureDetector(
                 onTap: () async {
-                  await Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductsScreen())).then(
-                    (value) {
-                      if (value != null) {
-                        log(value.toString());
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => InsertButtonScreen(
-                        //       product: ((value as EditItem).product!),
-                        //       buttonText: buttonText,
-                        //       colorPaletIndex: colorPaletIndex,
-                        //       fontSize: fontSize,
-                        //       selectedColorIndex: selectedColorIndex,
-                        //       selectedFontIndex: selectedFontIndex,
-                        //       selectedShapeIndex: selectedShapeIndex,
-                        //     ),
-                        //   ),
-                        // );
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) => SizedBox(height: screenSize.height, child: const TagScreen(fromEditScreen: true)),
+                  ).then((response) async {
+                    if (response != null) {
+                      if (response.runtimeType == Product) {
+                        setState(() {
+                          product = (response as Product);
+                        });
                       }
-                    },
-                  );
+                    }
+                  });
                 },
-                child: ProductCard(
-                  product: widget.product,
-                ),
+                child: ProductCard(product: product),
               ),
               topMenu(),
               verticalSlider(
@@ -232,7 +225,7 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                 selectedButtonShapeIndex: selectedShapeIndex,
                 text: buttonText,
                 fontSize: fontSize,
-                product: widget.product,
+                product: product,
                 size: Size(screenSize.width * 0.7, boundary.size.height * 2),
               ),
             );

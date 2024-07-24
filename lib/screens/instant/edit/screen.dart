@@ -21,6 +21,7 @@ import '../../new_instant.dart';
 import '../insert_template/screen.dart';
 
 final GlobalKey repaintBoundaryKey = GlobalKey();
+bool showDeleteIcon = false;
 
 class EditScreen extends StatefulWidget {
   const EditScreen({super.key, this.imageFile, this.backgroundColor, this.items});
@@ -82,79 +83,82 @@ class _EditScreenState extends State<EditScreen> {
                         SizedBox(
                           width: screenSize.width,
                           height: screenSize.height,
-                          child: EditItemsWithOutTemplate(items: items, onDoubleTap: onDoubleTap, onLongPress: (item) => onLongPress(item)),
+                          child: EditItemsWithOutTemplate(items: items, onDoubleTap: onDoubleTap, onDelete: (item) => onDelete(item)),
                         ),
                       ],
                     );
                   }),
                 ),
               ),
-              if (!insertingText && !insertingButton && !insertingTemplate)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            await Permission.storage.request();
-                            await Permission.manageExternalStorage.request();
-                            var directory = await Directory('/storage/emulated/0/DCIM/Camera').create(recursive: true);
-                            await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true);
-                          },
-                          child: Container(
-                            height: 50,
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: primaryColor, width: 1)),
-                            child: Center(
-                              child: Text(
-                                'Save',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: primaryColor),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () async {
-                            try {
-                              await _prepareImage(directoryPath: (await getTemporaryDirectory()).path, title: 'Processing Image').then((mediaPath) {
-                                if (mediaPath != null) {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewInstantScreen(imageFile: File(mediaPath), items: items)));
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => const AlertDialog(
-                                      title: Text('Error'),
-                                      content: Text('Failed to save image'),
-                                    ),
-                                  );
-                                }
-                              });
-                            } catch (e) {
-                              log(e.toString());
-                            }
-                          },
-                          child: Container(
-                            height: 50,
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(5)),
-                            child: const Center(
-                              child: Text(
-                                'Next',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              if (insertingTemplate) SizedBox(height: screenSize.height * 0.2),
             ],
           ),
+          if (!insertingText && !insertingButton && !insertingTemplate)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          await Permission.storage.request();
+                          await Permission.manageExternalStorage.request();
+                          var directory = await Directory('/storage/emulated/0/DCIM/Camera').create(recursive: true);
+                          await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true);
+                        },
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), border: Border.all(color: primaryColor, width: 1)),
+                          child: Center(
+                            child: Text(
+                              'Save',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: primaryColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          try {
+                            await _prepareImage(directoryPath: (await getTemporaryDirectory()).path, title: 'Processing Image').then((mediaPath) {
+                              if (mediaPath != null) {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewInstantScreen(imageFile: File(mediaPath), items: items)));
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => const AlertDialog(
+                                    title: Text('Error'),
+                                    content: Text('Failed to save image'),
+                                  ),
+                                );
+                              }
+                            });
+                          } catch (e) {
+                            log(e.toString());
+                          }
+                        },
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(5)),
+                          child: const Center(
+                            child: Text(
+                              'Next',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (insertingTemplate) SizedBox(height: screenSize.height * 0.2),
           if (!insertingText && !insertingButton && !insertingTemplate)
             Align(
               alignment: const Alignment(0, -0.9),
@@ -249,7 +253,7 @@ class _EditScreenState extends State<EditScreen> {
                             await showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
-                              builder: (context) => SizedBox(height: screenSize.height, child: const TagScreen()),
+                              builder: (context) => SizedBox(height: screenSize.height, child: const TagScreen(fromEditScreen: true)),
                             ).then((response) async {
                               if (response != null) {
                                 if (response.runtimeType == Product) {
@@ -375,7 +379,7 @@ class _EditScreenState extends State<EditScreen> {
     }
   }
 
-  onLongPress(item) async {
+  onDelete(item) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog.adaptive(
@@ -480,6 +484,9 @@ class _EditScreenState extends State<EditScreen> {
           items.removeAt(items.indexOf(items.firstWhere((element) => element == item)));
         });
       }
+      setState(() {
+        showDeleteIcon = false;
+      });
     });
   }
 }

@@ -5,7 +5,8 @@ import '../model/product.dart';
 import '../utils/constants.dart';
 
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+  const ProductsScreen({super.key, required this.fromEditScreen});
+  final bool fromEditScreen;
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();

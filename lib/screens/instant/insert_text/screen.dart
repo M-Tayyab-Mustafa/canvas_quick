@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import '../../../utils/constants.dart';
 
 class InsertTextScreen extends StatefulWidget {
-  const InsertTextScreen({super.key, required this.controller, this.fontSize = 18, this.selectedColorIndex = 0, this.selectedFontIndex = 0});
+  const InsertTextScreen({super.key, required this.controller, this.fontSize = 18, this.selectedColorIndex = 0, this.selectedFontIndex = 0, this.selectedTextAlignIndex = 0, this.selectedTextBackgroundColorIndex = 1});
   final TextEditingController controller;
   final double fontSize;
   final int selectedColorIndex;
   final int selectedFontIndex;
+  final int selectedTextAlignIndex;
+  final int selectedTextBackgroundColorIndex;
   @override
   State<InsertTextScreen> createState() => _InsertTextScreenState();
 }
@@ -19,13 +21,13 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   late FocusNode focusNode;
   late int selectedColorIndex;
   late int selectedFontIndex;
-  bool colorPaletSelected = true;
-  bool isTextBackgroundEnabled = false;
+  int selectedPaletIndex = 1;
   late TextEditingController controller;
   late double fontSize;
-  final TextAlign textAlign = TextAlign.center;
   GlobalKey key = GlobalKey();
   String? text;
+  late int selectedTextAlignIndex;
+  late int selectedTextBackgroundColorIndex;
 
   @override
   void initState() {
@@ -34,6 +36,8 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
     fontSize = widget.fontSize;
     selectedColorIndex = widget.selectedColorIndex;
     selectedFontIndex = widget.selectedFontIndex;
+    selectedTextAlignIndex = widget.selectedTextAlignIndex;
+    selectedTextBackgroundColorIndex = widget.selectedTextBackgroundColorIndex;
     super.initState();
   }
 
@@ -70,7 +74,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               });
             },
           ),
-          if (colorPaletSelected)
+          if (selectedPaletIndex == 1)
             CColors(
               index: (index) {
                 setState(() {
@@ -79,7 +83,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               },
               selectedColorIndex: selectedColorIndex,
             ),
-          if (!colorPaletSelected)
+          if (selectedPaletIndex == 0)
             CFonts(
               index: (index) {
                 setState(() {
@@ -88,6 +92,15 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               },
               selectedFontIndex: selectedFontIndex,
             ),
+          if (selectedPaletIndex == 2)
+            CColors(
+              index: (index) {
+                setState(() {
+                  selectedTextBackgroundColorIndex = index;
+                });
+              },
+              selectedColorIndex: selectedTextBackgroundColorIndex,
+            ),
           topMenu(),
         ],
       ),
@@ -95,29 +108,29 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   }
 
   Widget textField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            focusNode.dispose();
-            focusNode = FocusNode(canRequestFocus: true);
-            focusNode.requestFocus();
-          });
-        },
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          focusNode.dispose();
+          focusNode = FocusNode(canRequestFocus: true);
+          focusNode.requestFocus();
+        });
+      },
+      child: Center(
         child: Container(
           color: Colors.transparent,
           height: screenSize.height - 50,
+          width: screenSize.width * 0.85,
           child: Center(
             child: TextFormField(
               focusNode: focusNode,
               controller: controller,
               autofocus: true,
               maxLines: null,
-              textAlign: textAlign,
-              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: !isTextBackgroundEnabled ? Colors.transparent : Colors.white),
+              textAlign: textAligns[selectedTextAlignIndex],
+              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
               decoration: InputDecoration(
-                hintStyle: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: !isTextBackgroundEnabled ? Colors.transparent : Colors.white),
+                hintStyle: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
                 border: InputBorder.none,
                 errorBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
@@ -151,46 +164,80 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  if (colorPaletSelected) {
-                    setState(() {
-                      colorPaletSelected = false;
-                    });
-                  }
+                  setState(() {
+                    selectedPaletIndex = 0;
+                  });
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: colorPaletSelected ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: selectedPaletIndex != 0 ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
                   child: SvgPicture.asset('assets/icons/text_style.svg'),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  if (!colorPaletSelected) {
-                    setState(() {
-                      colorPaletSelected = true;
-                    });
-                  }
+                  setState(() {
+                    selectedPaletIndex = 1;
+                  });
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: !colorPaletSelected ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: selectedPaletIndex != 1 ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
                   child: SvgPicture.asset('assets/icons/color_palete.svg'),
                 ),
               ),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    isTextBackgroundEnabled = !isTextBackgroundEnabled;
+                    selectedPaletIndex = 2;
                   });
                 },
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: !isTextBackgroundEnabled ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: selectedPaletIndex != 2 ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
                   child: const Icon(
                     Icons.text_fields,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (selectedTextAlignIndex == 0) {
+                      setState(() {
+                        selectedTextAlignIndex = 1;
+                      });
+                    } else if (selectedTextAlignIndex == 1) {
+                      setState(() {
+                        selectedTextAlignIndex = 2;
+                      });
+                    } else if (selectedTextAlignIndex == 2) {
+                      setState(() {
+                        selectedTextAlignIndex = 3;
+                      });
+                    } else {
+                      setState(() {
+                        selectedTextAlignIndex = 0;
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(color: Color(0xFF27262A), shape: BoxShape.circle),
+                  child: Icon(
+                    selectedTextAlignIndex == 0
+                        ? Icons.format_align_center
+                        : selectedTextAlignIndex == 1
+                            ? Icons.format_align_justify
+                            : selectedTextAlignIndex == 2
+                                ? Icons.format_align_left
+                                : Icons.format_align_right,
                     color: Colors.white,
                   ),
                 ),
@@ -209,14 +256,14 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
                   type: EditItemType.text,
                   text: controller.text,
                   fontSize: fontSize,
-                  textAlign: textAlign,
+                  textAlign: textAligns[selectedTextAlignIndex],
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
                   position: Offset(
                     (screenSize.width * 0.5) - (screenSize.width * 0.8) / 2,
                     (screenSize.height * 0.5) - (boundary!.size.height * 0.5),
                   ),
-                  isTextBackgroundEnabled: isTextBackgroundEnabled,
+                  textBackgroundColorIndex: selectedTextBackgroundColorIndex,
                   size: boundary.size,
                 ),
               );

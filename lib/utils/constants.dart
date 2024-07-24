@@ -6,6 +6,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../model/audience.dart';
 import '../model/editing_item.dart';
+import '../screens/instant/edit/screen.dart';
 
 late Size screenSize;
 
@@ -23,6 +24,13 @@ List<Audience> audiences = [
   Audience(title: 'Followers', subTitle: '6500 user', icon: const Icon(Icons.star, color: Colors.white), backgroundColor: Colors.greenAccent),
   Audience(title: 'Registered Users', subTitle: '3300 user', icon: const Icon(Icons.wine_bar), backgroundColor: Colors.yellow),
   Audience(title: 'Loyalty Member', subTitle: '600 user', icon: const Icon(Icons.favorite), backgroundColor: Colors.redAccent),
+];
+
+List<TextAlign> textAligns = [
+  TextAlign.center,
+  TextAlign.justify,
+  TextAlign.left,
+  TextAlign.right,
 ];
 
 const fontFamilies = [
@@ -58,7 +66,12 @@ typedef IndexCallback = void Function(int index);
 
 List<MaterialColor> materialColors = <MaterialColor>[
   MaterialColor(Colors.black.value, {50: Colors.black.withOpacity(0.05), 100: Colors.black.withOpacity(0.1)}),
-  ...Colors.primaries.map((e) => e)
+  MaterialColor(Colors.transparent.value, const {}),
+  MaterialColor(Colors.white.value, {50: Colors.white.withOpacity(0.05), 100: Colors.white.withOpacity(0.1)}),
+  ...Colors.primaries.map((e) => e),
+  ...Colors.accents.map(
+    (e) => MaterialColor(e.value, const {}),
+  )
 ];
 
 class CColors extends StatelessWidget {
@@ -83,16 +96,19 @@ class CColors extends StatelessWidget {
                 width: 30,
                 decoration: BoxDecoration(
                   color: materialColors[currentIndex],
-                  boxShadow: const [
-                    BoxShadow(
-                      spreadRadius: 2.5,
-                      color: Colors.white,
-                    ),
-                    BoxShadow(
-                      spreadRadius: 1.5,
-                      color: Colors.black,
-                    ),
-                  ],
+                  border: currentIndex == 1 ? Border.all(color: Colors.white) : null,
+                  boxShadow: currentIndex == 1
+                      ? null
+                      : [
+                          const BoxShadow(
+                            spreadRadius: 2.5,
+                            color: Colors.white,
+                          ),
+                          const BoxShadow(
+                            spreadRadius: 1.5,
+                            color: Colors.black,
+                          ),
+                        ],
                   shape: BoxShape.circle,
                 ),
                 child: selectedColorIndex == currentIndex ? const Center(child: Icon(Icons.check, color: Colors.white)) : null,
@@ -235,6 +251,7 @@ class _CButtonState extends State<CButton> {
                   color: widget.color,
                 ),
                 child: TextField(
+                  autofocus: true,
                   enabled: widget.enabled,
                   textAlign: TextAlign.center,
                   controller: controller,
@@ -272,7 +289,7 @@ class _CButtonState extends State<CButton> {
         : Center(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
-              width: screenSize.width * 0.8,
+              width: screenSize.width * 0.65,
               decoration: BoxDecoration(
                 color: widget.color,
                 borderRadius: BorderRadius.circular(
@@ -284,6 +301,7 @@ class _CButtonState extends State<CButton> {
                 ),
               ),
               child: TextField(
+                autofocus: true,
                 enabled: widget.enabled,
                 controller: controller,
                 onChanged: widget.onChange,
@@ -335,10 +353,10 @@ class ButtonMessageShape extends CustomClipper<Path> {
 }
 
 class EditItemsWithOutTemplate extends StatefulWidget {
-  const EditItemsWithOutTemplate({super.key, required this.items, this.onDoubleTap, this.onLongPress});
+  const EditItemsWithOutTemplate({super.key, required this.items, this.onDoubleTap, this.onDelete});
   final List<EditItem> items;
   final void Function(EditItem item)? onDoubleTap;
-  final void Function(EditItem item)? onLongPress;
+  final void Function(EditItem item)? onDelete;
 
   @override
   State<EditItemsWithOutTemplate> createState() => _EditItemsWithOutTemplateState();
@@ -349,89 +367,135 @@ class _EditItemsWithOutTemplateState extends State<EditItemsWithOutTemplate> {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Stack(
-        children: widget.items
-            .map((item) => Positioned(
-                  top: item.position.dy,
-                  left: item.position.dx,
-                  child: item.type == EditItemType.text
-                      ? Draggable(
-                          ignoringFeedbackSemantics: false,
-                          rootOverlay: true,
-                          feedback: SizedBox(
-                            width: constraints.maxWidth * 0.8,
-                            child: Text(
-                              item.text!,
-                              textAlign: item.textAlign,
-                              style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.isTextBackgroundEnabled == true ? Colors.white : Colors.transparent),
-                            ),
-                          ),
-                          childWhenDragging: const Text(''),
-                          onDragEnd: (details) {
-                            setState(() {
-                              item.position = details.offset;
-                            });
-                          },
-                          child: SizedBox(
-                            width: constraints.maxWidth * 0.8,
-                            child: InkWell(
-                              onLongPress: () {
-                                if (widget.onLongPress != null) {
-                                  widget.onLongPress!(item);
+        children: [
+          Stack(
+            children: widget.items
+                .map((item) => Positioned(
+                      top: item.position.dy,
+                      left: item.position.dx,
+                      child: item.type == EditItemType.text
+                          ? Draggable(
+                              ignoringFeedbackSemantics: false,
+                              rootOverlay: true,
+                              feedback: SizedBox(
+                                width: constraints.maxWidth * 0.8,
+                                child: Text(
+                                  item.text!,
+                                  textAlign: item.textAlign,
+                                  style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                ),
+                              ),
+                              childWhenDragging: const Text(''),
+                              onDragUpdate: (details) {
+                                if (details.globalPosition.dy > screenSize.height * 0.85) {
+                                  setState(() {
+                                    showDeleteIcon = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    showDeleteIcon = false;
+                                  });
                                 }
                               },
-                              onDoubleTap: () {
-                                if (widget.onDoubleTap != null) {
-                                  widget.onDoubleTap!(item);
+                              onDragEnd: (details) {
+                                if (details.offset.dy > screenSize.height * 0.83) {
+                                  if (widget.onDelete != null) {
+                                    widget.onDelete!(item);
+                                  }
+                                } else {
+                                  setState(() {
+                                    item.position = details.offset;
+                                  });
                                 }
                               },
-                              child: Text(
-                                item.text!,
-                                textAlign: item.textAlign,
-                                style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.isTextBackgroundEnabled == true ? Colors.white : Colors.transparent),
+                              child: SizedBox(
+                                width: constraints.maxWidth * 0.8,
+                                child: InkWell(
+                                  onDoubleTap: () {
+                                    if (widget.onDoubleTap != null) {
+                                      widget.onDoubleTap!(item);
+                                    }
+                                  },
+                                  child: Text(
+                                    item.text!,
+                                    textAlign: item.textAlign,
+                                    style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Draggable(
+                              feedback: CButton(
+                                enabled: false,
+                                color: item.color!,
+                                fontFamily: item.fontFamily!,
+                                selectedShapeIndex: item.selectedButtonShapeIndex!,
+                                buttonText: item.text!,
+                                fontSize: item.fontSize!,
+                                controller: TextEditingController(text: item.text),
+                              ),
+                              childWhenDragging: const Text(''),
+                              onDragUpdate: (details) {
+                                if (details.globalPosition.dy > screenSize.height * 0.835) {
+                                  setState(() {
+                                    showDeleteIcon = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    showDeleteIcon = false;
+                                  });
+                                }
+                              },
+                              onDragEnd: (details) {
+                                if (details.offset.dy > screenSize.height * 0.8) {
+                                  if (widget.onDelete != null) {
+                                    widget.onDelete!(item);
+                                  }
+                                } else {
+                                  setState(() {
+                                    item.position = details.offset;
+                                  });
+                                }
+                              },
+                              child: InkWell(
+                                onDoubleTap: () {
+                                  if (widget.onDoubleTap != null) {
+                                    widget.onDoubleTap!(item);
+                                  }
+                                },
+                                child: CButton(
+                                  enabled: false,
+                                  color: item.color!,
+                                  fontFamily: item.fontFamily!,
+                                  selectedShapeIndex: item.selectedButtonShapeIndex!,
+                                  buttonText: item.text!,
+                                  fontSize: item.fontSize!,
+                                  controller: TextEditingController(text: item.text),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : Draggable(
-                          feedback: CButton(
-                            enabled: false,
-                            color: item.color!,
-                            fontFamily: item.fontFamily!,
-                            selectedShapeIndex: item.selectedButtonShapeIndex!,
-                            buttonText: item.text!,
-                            fontSize: item.fontSize!,
-                            controller: TextEditingController(text: item.text),
-                          ),
-                          childWhenDragging: const Text(''),
-                          onDragEnd: (details) {
-                            setState(() {
-                              item.position = details.offset;
-                            });
-                          },
-                          child: InkWell(
-                            onLongPress: () {
-                              if (widget.onLongPress != null) {
-                                widget.onLongPress!(item);
-                              }
-                            },
-                            onDoubleTap: () {
-                              if (widget.onDoubleTap != null) {
-                                widget.onDoubleTap!(item);
-                              }
-                            },
-                            child: CButton(
-                              enabled: false,
-                              color: item.color!,
-                              fontFamily: item.fontFamily!,
-                              selectedShapeIndex: item.selectedButtonShapeIndex!,
-                              buttonText: item.text!,
-                              fontSize: item.fontSize!,
-                              controller: TextEditingController(text: item.text),
-                            ),
-                          ),
-                        ),
-                ))
-            .toList(),
+                    ))
+                .toList(),
+          ),
+          if (showDeleteIcon)
+            Align(
+              alignment: const Alignment(0, 0.8),
+              child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black45),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.delete_forever_rounded,
+                    size: 35,
+                    color: Colors.black45,
+                  ),
+                ),
+              ),
+            ),
+        ],
       );
     });
   }

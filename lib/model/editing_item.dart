@@ -15,7 +15,7 @@ class EditItem {
   final EditItemType type;
   int? selectedButtonShapeIndex;
   Product? product;
-  bool? isTextBackgroundEnabled;
+  int? textBackgroundColorIndex;
   Size? size;
 
   EditItem({
@@ -29,7 +29,7 @@ class EditItem {
     this.fontFamily,
     this.selectedButtonShapeIndex,
     this.product,
-    this.isTextBackgroundEnabled,
+    this.textBackgroundColorIndex,
     this.size,
   });
 
@@ -44,7 +44,7 @@ class EditItem {
     String? fontFamily,
     int? selectedButtonShapeIndex,
     Product? product,
-    bool? isTextBackgroundEnabled,
+    int? textBackgroundColorIndex,
     Size? size,
   }) {
     return EditItem(
@@ -58,24 +58,7 @@ class EditItem {
         fontFamily: fontFamily ?? this.fontFamily,
         selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
         product: product ?? this.product,
-        isTextBackgroundEnabled: isTextBackgroundEnabled ?? this.isTextBackgroundEnabled,
+        textBackgroundColorIndex: textBackgroundColorIndex ?? this.textBackgroundColorIndex,
         size: size ?? this.size);
-  }
-
-  @override
-  String toString() {
-    return 'EditItem(key: $key, itemType: $type, position: $position, text: $text, fontSize: $fontSize, textAlign: $textAlign, textColor: $color, fontFamily: $fontFamily, selectedButtonShapeIndex: $selectedButtonShapeIndex, product: $product, isTextBackgroundEnabled: $isTextBackgroundEnabled, size: $size)';
-  }
-
-  @override
-  bool operator ==(covariant EditItem other) {
-    if (identical(this, other)) return true;
-
-    return other.key == key && other.type == type && other.position == position && other.text == text && other.fontSize == fontSize && other.textAlign == textAlign && other.color == color && other.fontFamily == fontFamily && other.selectedButtonShapeIndex == selectedButtonShapeIndex && other.product == product && other.isTextBackgroundEnabled == isTextBackgroundEnabled && other.size == size;
-  }
-
-  @override
-  int get hashCode {
-    return key.hashCode ^ type.hashCode ^ position.hashCode ^ text.hashCode ^ fontSize.hashCode ^ textAlign.hashCode ^ color.hashCode ^ fontFamily.hashCode ^ selectedButtonShapeIndex.hashCode ^ product.hashCode ^ isTextBackgroundEnabled.hashCode ^ size.hashCode;
   }
 }

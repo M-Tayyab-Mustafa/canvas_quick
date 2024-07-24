@@ -4,7 +4,8 @@ import 'products_screen.dart';
 import 'locations_screen.dart';
 
 class TagScreen extends StatefulWidget {
-  const TagScreen({super.key});
+  const TagScreen({super.key, required this.fromEditScreen});
+  final bool fromEditScreen;
 
   @override
   State<TagScreen> createState() => _TagScreenState();
@@ -83,7 +84,7 @@ class _TagScreenState extends State<TagScreen> {
                       showModalBottomSheet(
                         isScrollControlled: true,
                         context: context,
-                        builder: (context) => SizedBox(height: screenSize.height, child: const ProductsScreen()),
+                        builder: (context) => SizedBox(height: screenSize.height, child: ProductsScreen(fromEditScreen: widget.fromEditScreen)),
                       );
                     },
                     child: Container(

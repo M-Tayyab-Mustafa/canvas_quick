@@ -7,30 +7,30 @@ import 'product.dart';
 class EditItem {
   GlobalKey key;
   Offset position;
-  String? text;
-  double? fontSize;
+  String text;
+  double fontSize;
+  String fontFamily;
   TextAlign? textAlign;
   Color? color;
-  String? fontFamily;
+  Product? product;
   final EditItemType type;
   int? selectedButtonShapeIndex;
-  Product? product;
   int? textBackgroundColorIndex;
-  Size? size;
+  Size? textSize;
 
   EditItem({
     required this.key,
     required this.type,
     required this.position,
-    this.text,
-    this.fontSize,
+    required this.text,
+    required this.fontSize,
+    required this.fontFamily,
     this.textAlign,
     this.color,
-    this.fontFamily,
     this.selectedButtonShapeIndex,
     this.product,
     this.textBackgroundColorIndex,
-    this.size,
+    this.textSize,
   });
 
   EditItem copyWith({
@@ -45,20 +45,21 @@ class EditItem {
     int? selectedButtonShapeIndex,
     Product? product,
     int? textBackgroundColorIndex,
-    Size? size,
+    Size? textSize,
   }) {
     return EditItem(
-        key: key ?? this.key,
-        type: type ?? this.type,
-        position: position ?? this.position,
-        text: text ?? this.text,
-        fontSize: fontSize ?? this.fontSize,
-        textAlign: textAlign ?? this.textAlign,
-        color: color ?? this.color,
-        fontFamily: fontFamily ?? this.fontFamily,
-        selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
-        product: product ?? this.product,
-        textBackgroundColorIndex: textBackgroundColorIndex ?? this.textBackgroundColorIndex,
-        size: size ?? this.size);
+      key: key ?? this.key,
+      type: type ?? this.type,
+      position: position ?? this.position,
+      text: text ?? this.text,
+      fontSize: fontSize ?? this.fontSize,
+      fontFamily: fontFamily ?? this.fontFamily,
+      textAlign: textAlign ?? this.textAlign,
+      color: color ?? this.color,
+      product: product ?? this.product,
+      selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
+      textBackgroundColorIndex: textBackgroundColorIndex ?? this.textBackgroundColorIndex,
+      textSize: textSize ?? this.textSize,
+    );
   }
 }

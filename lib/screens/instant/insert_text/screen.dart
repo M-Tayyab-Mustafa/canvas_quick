@@ -24,10 +24,10 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   int selectedPaletIndex = 1;
   late TextEditingController controller;
   late double fontSize;
-  GlobalKey key = GlobalKey();
-  String? text;
+  String text = '';
   late int selectedTextAlignIndex;
   late int selectedTextBackgroundColorIndex;
+  final GlobalKey textKey = GlobalKey();
 
   @override
   void initState() {
@@ -53,19 +53,16 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          textField(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Center(
-              child: RepaintBoundary(
-                key: key,
-                child: Text(
-                  text ?? '',
-                  style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex]),
-                ),
-              ),
+          Align(
+            alignment: const Alignment(-99, 99),
+            child: Text(
+              text,
+              key: textKey,
+              textAlign: textAligns[selectedTextAlignIndex],
+              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
             ),
           ),
+          textField(),
           verticalSlider(
             fontSize,
             (newFontSize) {
@@ -248,23 +245,20 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
             onTap: () {
               text = controller.text;
               setState(() {});
-              RenderRepaintBoundary? boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+              final RenderBox? renderBox = textKey.currentContext?.findRenderObject() as RenderBox?;
               Navigator.pop(
                 context,
                 EditItem(
-                  key: key,
+                  key: GlobalKey(),
                   type: EditItemType.text,
                   text: controller.text,
                   fontSize: fontSize,
                   textAlign: textAligns[selectedTextAlignIndex],
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
-                  position: Offset(
-                    (screenSize.width * 0.5) - (screenSize.width * 0.8) / 2,
-                    (screenSize.height * 0.5) - (boundary!.size.height * 0.5),
-                  ),
+                  position: Offset((screenSize.width * 0.5) - ((screenSize.width * 0.8) * 0.5), (screenSize.height - 90) * 0.5),
                   textBackgroundColorIndex: selectedTextBackgroundColorIndex,
-                  size: boundary.size,
+                  textSize: renderBox!.size,
                 ),
               );
             },

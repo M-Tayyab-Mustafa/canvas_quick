@@ -44,6 +44,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   flutter_colorpicker:
     path: ./packages/flutter_colorpicker-master
+  video_thumbnail: ^0.5.3
+  video_player: ^2.9.1
 
 dev_dependencies:
   flutter_test:

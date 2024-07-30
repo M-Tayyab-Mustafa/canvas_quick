@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,32 +22,20 @@ class _InsertTemplateState extends State<InsertTemplate> {
 
   @override
   void initState() {
-    items = widget.items.map((item) => item.copyWith(position: Offset(item.position.dx, item.position.dy - (screenSize.height * 0.26)))).toList();
+    items = widget.items.map((item) => item.copyWith(position: Offset(item.position.dx, item.position.dy - (screenSize.height * 0.3)))).toList();
     selectedTemplate = templates.first;
     template();
     super.initState();
   }
 
   template() {
-    var itemsWithNewPositions = <EditItem>[];
-    var template = templates.firstWhere((cTemplate) => cTemplate == selectedTemplate);
-    if (template == templates.last) {
-      template = template.copyWith(position: Offset(((screenSize.width / 2) - (screenSize.width * 0.85) / 2), items.first.position.dy - (screenSize.height * 0.26)));
-    }
-    items = widget.items.map((item) => item.copyWith(position: Offset(template.position!.dx, item.type == EditItemType.button ? template.position!.dy - screenSize.height * 0.02 : template.position!.dy), textAlign: template.textAlign)).toList();
-    if (items.length >= 2) {
-      for (var i = 0; i < items.length; i++) {
-        itemsWithNewPositions.add(items[i]);
-        for (var i = 0; i <= itemsWithNewPositions.length - 1; i++) {
-          if (i + 1 <= itemsWithNewPositions.length - 1) {
-            var dy = (itemsWithNewPositions[i].position.dy - itemsWithNewPositions[i + 1].size!.height) - 5;
-            itemsWithNewPositions[i] = itemsWithNewPositions[i].copyWith(position: Offset(itemsWithNewPositions[i].position.dx, dy));
-          }
-        }
+    setState(() {
+      var height = (screenSize.height - (screenSize.height * 0.3));
+      for (var item in items) {
+        item.position = Offset(item.position.dx, height);
+        selectedTemplate == templates.first ? item.textAlign = TextAlign.left : item.textAlign = TextAlign.center;
       }
-      items = itemsWithNewPositions;
-    }
-    setState(() {});
+    });
   }
 
   @override
@@ -87,31 +76,34 @@ class _InsertTemplateState extends State<InsertTemplate> {
                               width: screenSize.width - 20,
                               child: LayoutBuilder(
                                 builder: (context, constraints) {
-                                  return Stack(
+                                  return Column(
+                                    mainAxisAlignment: selectedTemplate == templates.first ? MainAxisAlignment.end : MainAxisAlignment.center,
+                                    crossAxisAlignment: selectedTemplate == templates.first ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                                     children: items
                                         .map(
-                                          (item) => Positioned(
-                                            top: item.position.dy,
-                                            left: item.position.dx,
-                                            child: item.type == EditItemType.text
-                                                ? SizedBox(
-                                                    width: constraints.maxWidth * 0.8,
-                                                    child: Text(
-                                                      item.text!,
-                                                      textAlign: item.textAlign,
-                                                      style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent),
-                                                    ),
-                                                  )
-                                                : CButton(
+                                          (item) => item.type == EditItemType.text
+                                              ? Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Text(
+                                                    key: item.key,
+                                                    item.text,
+                                                    textAlign: item.textAlign,
+                                                    style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent),
+                                                  ),
+                                                )
+                                              : SizedBox(
+                                                  key: item.key,
+                                                  width: constraints.maxWidth * 0.65,
+                                                  child: CButton(
                                                     enabled: false,
                                                     color: item.color!,
-                                                    fontFamily: item.fontFamily!,
+                                                    fontFamily: item.fontFamily,
                                                     selectedShapeIndex: item.selectedButtonShapeIndex!,
-                                                    buttonText: item.text!,
-                                                    fontSize: item.fontSize!,
+                                                    buttonText: item.text,
+                                                    fontSize: item.fontSize,
                                                     controller: TextEditingController(text: item.text),
                                                   ),
-                                          ),
+                                                ),
                                         )
                                         .toList(),
                                   );
@@ -169,7 +161,48 @@ class _InsertTemplateState extends State<InsertTemplate> {
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 5)),
               GestureDetector(
-                onTap: () => Navigator.pop(context, items.map((item) => item.copyWith(position: Offset(item.position.dx, item.position.dy + (screenSize.height * 0.15)))).toList()),
+                onTap: () {
+                  double screenWidth = screenSize.width;
+                  double centerX = screenWidth / 2;
+                  var totalWidgetHeight = 0.0;
+                  var updatedList = <EditItem>[];
+                  for (var i = 0; i < items.length; i++) {
+                    final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
+                    if (renderBox != null) {
+                      totalWidgetHeight += renderBox.size.height;
+                    }
+                  }
+                  if (selectedTemplate == templates.first) {
+                    double currentHeight = (screenSize.height * 0.8) - totalWidgetHeight;
+                    for (var i = 0; i < items.length; i++) {
+                      final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
+                      if (renderBox != null) {
+                        double itemHeight = renderBox.size.height;
+                        updatedList = updatedList.map((item) => item.copyWith(position: Offset(0, item.position.dy - itemHeight))).toList();
+                        updatedList.add(items[i].copyWith(position: Offset(0, currentHeight), textAlign: TextAlign.left));
+                        currentHeight += itemHeight;
+                      }
+                    }
+                  } else {
+                    double remainingHeight = (screenSize.height * 0.8) - totalWidgetHeight;
+                    double currentHeight = (screenSize.height * 0.8) - (remainingHeight * 0.6);
+                    for (var i = 0; i < items.length; i++) {
+                      final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
+                      if (renderBox != null) {
+                        double itemHeight = renderBox.size.height;
+                        updatedList.add(items[i].copyWith(position: Offset(centerX - renderBox.size.width / 2, currentHeight), textAlign: TextAlign.center));
+                        log('Item $i height: $itemHeight :: Current Height: $currentHeight');
+                        updatedList = updatedList.map((item) => item.copyWith(position: Offset(item.position.dx, item.position.dy - itemHeight * 0.5))).toList();
+                        currentHeight += itemHeight;
+                      }
+                    }
+                  }
+
+                  /*
+                 
+                   */
+                  Navigator.pop(context, updatedList);
+                },
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
@@ -187,8 +220,8 @@ class _InsertTemplateState extends State<InsertTemplate> {
               )
             ],
           ),
-          Positioned(
-            top: kToolbarHeight * 0.8,
+          Align(
+            alignment: const Alignment(-0.95, -0.88),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: GestureDetector(

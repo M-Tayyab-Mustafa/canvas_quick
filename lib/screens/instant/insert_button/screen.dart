@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:screens/model/editing_item.dart';
 import 'package:screens/model/product.dart';
@@ -39,7 +36,6 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
   late String buttonText;
   late double fontSize;
   late Product product;
-  GlobalKey key = GlobalKey();
 
   @override
   void initState() {
@@ -63,22 +59,6 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Stack(
             children: [
-              Align(
-                alignment: const Alignment(100, 100),
-                child: RepaintBoundary(
-                  key: key,
-                  child: Text(
-                    buttonText,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Colors.white,
-                          fontSize: fontSize,
-                          fontFamily: fontFamilies[selectedFontIndex],
-                          fontWeight: FontWeight.w500,
-                        ),
-                  ),
-                ),
-              ),
               CButton(
                 selectedShapeIndex: selectedShapeIndex,
                 color: materialColors[selectedColorIndex],
@@ -87,7 +67,6 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                 fontSize: fontSize,
                 controller: TextEditingController(text: buttonText),
                 onChange: (value) {
-                  log(value);
                   setState(() {
                     buttonText = value;
                   });
@@ -212,21 +191,18 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
         ),
         GestureDetector(
           onTap: () {
-            RenderRepaintBoundary? boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-            log(boundary!.size.toString());
             Navigator.pop(
               context,
               EditItem(
-                key: key,
+                key: GlobalKey(),
                 type: EditItemType.button,
-                position: Offset((screenSize.width * 0.5) - ((screenSize.width * 0.8) / 2), screenSize.height / 2),
+                position: Offset((screenSize.width * 0.5) - ((screenSize.width * 0.65) * 0.5), (screenSize.height - 90) * 0.5),
                 fontFamily: fontFamilies[selectedFontIndex],
                 color: materialColors[selectedColorIndex],
                 selectedButtonShapeIndex: selectedShapeIndex,
                 text: buttonText,
                 fontSize: fontSize,
                 product: product,
-                size: Size(screenSize.width * 0.7, boundary.size.height * 2),
               ),
             );
           },

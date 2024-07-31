@@ -590,7 +590,7 @@ class _OverlayWidgetsState extends State<OverlayWidgets> {
                               ignoringFeedbackSemantics: false,
                               rootOverlay: true,
                               feedback: SizedBox(
-                                width: constraints.maxWidth * 0.8,
+                                width: item.textSize!.width > constraints.maxWidth * 0.8 ? constraints.maxWidth * 0.8 : null,
                                 child: Text(
                                   item.text,
                                   textAlign: item.textAlign,

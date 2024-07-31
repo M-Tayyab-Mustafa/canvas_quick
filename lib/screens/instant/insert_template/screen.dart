@@ -169,7 +169,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                   for (var i = 0; i < items.length; i++) {
                     final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
                     if (renderBox != null) {
-                      totalWidgetHeight += renderBox.size.height;
+                      totalWidgetHeight += renderBox.size.height / 2;
                     }
                   }
                   if (selectedTemplate == templates.first) {

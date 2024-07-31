@@ -256,9 +256,9 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
                   textAlign: textAligns[selectedTextAlignIndex],
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
-                  position: Offset((screenSize.width * 0.5) - ((screenSize.width * 0.8) * 0.5), (screenSize.height - 90) * 0.5),
+                  position: Offset((screenSize.width * 0.5) - (renderBox!.size.width * 0.5), (screenSize.height - 90) * 0.5),
                   textBackgroundColorIndex: selectedTextBackgroundColorIndex,
-                  textSize: renderBox!.size,
+                  textSize: renderBox.size,
                 ),
               );
             },

@@ -164,11 +164,11 @@ class _InsertTemplateState extends State<InsertTemplate> {
                     if (items[i].type == EditItemType.button) {
                       final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
                       if (renderBox != null) {
-                        items[i] = items[i].copyWith(size: renderBox.size);
+                        items[i] = items[i].copyWith(size: Size(renderBox.size.width, renderBox.size.height + 5));
                       }
                     } else {
                       var textSize = calculateTextSize(items[i].text, TextStyle(fontSize: items[i].fontSize, color: items[i].color, fontFamily: items[i].fontFamily, backgroundColor: items[i].textBackgroundColorIndex != null ? materialColors[items[i].textBackgroundColorIndex!] : Colors.transparent));
-                      items[i] = items[i].copyWith(size: textSize);
+                      items[i] = items[i].copyWith(size: Size(textSize.width, textSize.height + 5));
                     }
                   }
                   //* Alignment Of the Widgets
@@ -185,7 +185,10 @@ class _InsertTemplateState extends State<InsertTemplate> {
                     }
                     double dy = (editingHeight - 40);
                     for (var i = 0; i < items.length; i++) {
-                      double dx = centerX - items[i].size!.width * 0.5;
+                      double dx = centerX - (items[i].size!.width * 0.5);
+                      if (items[i].type == EditItemType.text && items[i].size!.width > screenSize.width * 0.8) {
+                        dx = ((screenSize.width * 0.8) * 0.8) - (items[i].size!.width * 0.5);
+                      }
                       updatedList.add(items[i].copyWith(position: Offset(dx, dy - items[i].size!.height), textAlign: TextAlign.center));
                       dy -= items[i].size!.height + 5;
                     }

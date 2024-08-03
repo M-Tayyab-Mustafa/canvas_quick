@@ -170,7 +170,7 @@ class _EditScreenState extends State<EditScreen> {
                                                 ),
                                                 childWhenDragging: const Text(''),
                                                 onDragUpdate: (details) {
-                                                  if (details.globalPosition.dy + item.size!.height > constraints.maxHeight - 25) {
+                                                  if (details.globalPosition.dy + (item.size?.height ?? 0) > constraints.maxHeight - 25) {
                                                     setState(() {
                                                       showDeleteIcon = true;
                                                     });
@@ -181,7 +181,7 @@ class _EditScreenState extends State<EditScreen> {
                                                   }
                                                 },
                                                 onDragEnd: (details) {
-                                                  if ((details.offset.dy + item.size!.height) > constraints.maxHeight - 55) {
+                                                  if ((details.offset.dy + (item.size?.height ?? 0)) > constraints.maxHeight - 55) {
                                                     onDelete(item);
                                                   } else {
                                                     setState(() {
@@ -211,7 +211,6 @@ class _EditScreenState extends State<EditScreen> {
                                   alignment: const Alignment(0, 1),
                                   child: Container(
                                     height: screenSize.height * 0.07,
-                                    width: double.infinity,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       border: Border.all(color: Colors.black45),

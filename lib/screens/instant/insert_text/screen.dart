@@ -27,6 +27,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
   late int selectedTextAlignIndex;
   late int selectedTextBackgroundColorIndex;
   final GlobalKey textKey = GlobalKey();
+  Size textSize = const Size(0, 0);
 
   @override
   void initState() {
@@ -52,15 +53,6 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          Align(
-            alignment: const Alignment(-99, 99),
-            child: Text(
-              text,
-              key: textKey,
-              textAlign: textAligns[selectedTextAlignIndex],
-              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
-            ),
-          ),
           textField(),
           verticalSlider(
             fontSize,
@@ -123,6 +115,11 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               controller: controller,
               autofocus: true,
               maxLines: null,
+              onChanged: (value) {
+                setState(() {
+                  textSize = calculateTextSize(value, TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9));
+                });
+              },
               textAlign: textAligns[selectedTextAlignIndex],
               style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
               decoration: InputDecoration(
@@ -244,20 +241,19 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
             onTap: () {
               text = controller.text;
               setState(() {});
-              final RenderBox? renderBox = textKey.currentContext?.findRenderObject() as RenderBox?;
               Navigator.pop(
                 context,
                 EditItem(
-                  key: GlobalKey(),
+                  key: textKey,
                   type: EditItemType.text,
                   text: controller.text,
                   fontSize: fontSize,
                   textAlign: textAligns[selectedTextAlignIndex],
                   color: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
-                  position: Offset((screenSize.width * 0.5) - (renderBox!.size.width * 0.5), (screenSize.height - 90) * 0.5),
+                  position: Offset((screenSize.width * 0.5) - (textSize.width * 0.5), (screenSize.height - 90) * 0.5),
                   textBackgroundColorIndex: selectedTextBackgroundColorIndex,
-                  textSize: renderBox.size,
+                  size: textSize,
                 ),
               );
             },

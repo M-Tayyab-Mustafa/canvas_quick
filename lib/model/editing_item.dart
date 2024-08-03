@@ -16,7 +16,7 @@ class EditItem {
   final EditItemType type;
   int? selectedButtonShapeIndex;
   int? textBackgroundColorIndex;
-  Size? textSize;
+  Size? size;
 
   EditItem({
     required this.key,
@@ -30,7 +30,7 @@ class EditItem {
     this.selectedButtonShapeIndex,
     this.product,
     this.textBackgroundColorIndex,
-    this.textSize,
+    this.size,
   });
 
   EditItem copyWith({
@@ -45,7 +45,7 @@ class EditItem {
     int? selectedButtonShapeIndex,
     Product? product,
     int? textBackgroundColorIndex,
-    Size? textSize,
+    Size? size,
   }) {
     return EditItem(
       key: key ?? this.key,
@@ -59,7 +59,7 @@ class EditItem {
       product: product ?? this.product,
       selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
       textBackgroundColorIndex: textBackgroundColorIndex ?? this.textBackgroundColorIndex,
-      textSize: textSize ?? this.textSize,
+      size: size ?? this.size,
     );
   }
 }

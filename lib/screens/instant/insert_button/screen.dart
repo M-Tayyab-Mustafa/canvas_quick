@@ -36,6 +36,7 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
   late String buttonText;
   late double fontSize;
   late Product product;
+  final GlobalKey buttonKey = GlobalKey();
 
   @override
   void initState() {
@@ -59,18 +60,21 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Stack(
             children: [
-              CButton(
-                selectedShapeIndex: selectedShapeIndex,
-                color: materialColors[selectedColorIndex],
-                fontFamily: fontFamilies[selectedFontIndex],
-                buttonText: buttonText,
-                fontSize: fontSize,
-                controller: TextEditingController(text: buttonText),
-                onChange: (value) {
-                  setState(() {
-                    buttonText = value;
-                  });
-                },
+              Center(
+                child: CButton(
+                  key: buttonKey,
+                  selectedShapeIndex: selectedShapeIndex,
+                  color: materialColors[selectedColorIndex],
+                  fontFamily: fontFamilies[selectedFontIndex],
+                  buttonText: buttonText,
+                  fontSize: fontSize,
+                  controller: TextEditingController(text: buttonText),
+                  onChange: (value) {
+                    setState(() {
+                      buttonText = value;
+                    });
+                  },
+                ),
               ),
               if (colorPaletIndex == 0)
                 CButtonShape(
@@ -194,9 +198,9 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
             Navigator.pop(
               context,
               EditItem(
-                key: GlobalKey(),
+                key: buttonKey,
                 type: EditItemType.button,
-                position: Offset((screenSize.width * 0.5) - ((screenSize.width * 0.65) * 0.5), (screenSize.height - 90) * 0.5),
+                position: Offset((screenSize.width * 0.5) - (buttonWidth * 0.5), (screenSize.height - 90) * 0.5),
                 fontFamily: fontFamilies[selectedFontIndex],
                 color: materialColors[selectedColorIndex],
                 selectedButtonShapeIndex: selectedShapeIndex,

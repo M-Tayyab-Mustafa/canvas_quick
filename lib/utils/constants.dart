@@ -6,6 +6,8 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../model/audience.dart';
 
 late Size screenSize;
+double buttonWidth = screenSize.width * 0.5;
+double editingHeight = screenSize.height - 90;
 
 enum EditItemType { button, text, other }
 
@@ -243,7 +245,7 @@ class _CButtonState extends State<CButton> {
               clipper: ButtonMessageShape(),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
-                width: screenSize.width * 0.8,
+                width: buttonWidth,
                 decoration: BoxDecoration(
                   color: widget.color,
                 ),
@@ -283,44 +285,42 @@ class _CButtonState extends State<CButton> {
               ),
             ),
           )
-        : Center(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
-              width: screenSize.width * 0.65,
-              decoration: BoxDecoration(
-                color: widget.color,
-                borderRadius: BorderRadius.circular(
-                  widget.selectedShapeIndex == 0
-                      ? 0
-                      : widget.selectedShapeIndex == 1
-                          ? 8
-                          : 999,
-                ),
+        : Container(
+            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
+            width: buttonWidth,
+            decoration: BoxDecoration(
+              color: widget.color,
+              borderRadius: BorderRadius.circular(
+                widget.selectedShapeIndex == 0
+                    ? 0
+                    : widget.selectedShapeIndex == 1
+                        ? 8
+                        : 999,
               ),
-              child: TextField(
-                autofocus: true,
-                enabled: widget.enabled,
-                controller: controller,
-                onChanged: widget.onChange,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Colors.white,
-                      fontSize: widget.fontSize,
-                      fontFamily: widget.fontFamily,
-                      fontWeight: FontWeight.w500,
-                    ),
-                cursorColor: Colors.white,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  fillColor: Colors.white,
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                ),
+            ),
+            child: TextField(
+              autofocus: true,
+              enabled: widget.enabled,
+              controller: controller,
+              onChanged: widget.onChange,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.white,
+                    fontSize: widget.fontSize,
+                    fontFamily: widget.fontFamily,
+                    fontWeight: FontWeight.w500,
+                  ),
+              cursorColor: Colors.white,
+              maxLines: null,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                fillColor: Colors.white,
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
               ),
             ),
           );
@@ -442,4 +442,13 @@ Widget verticalSlider(double fontSize, ValueChanged onChange) {
       ),
     ),
   );
+}
+
+Size calculateTextSize(String text, TextStyle style) {
+  final TextPainter textPainter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    maxLines: 1,
+    textDirection: TextDirection.ltr,
+  )..layout();
+  return textPainter.size;
 }

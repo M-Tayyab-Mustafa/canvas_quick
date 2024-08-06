@@ -76,14 +76,18 @@ class _InsertTemplateState extends State<InsertTemplate> {
                                         .map(
                                           (item) => item.type == EditItemType.text
                                               ? Padding(
-                                                  padding: const EdgeInsets.only(bottom: 5),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  padding: const EdgeInsets.only(left: 5, bottom: 5),
+                                                  child: SizedBox(
+                                                    width: item.fontSize * item.text.length > constraints.maxWidth * 0.9
+                                                        ? constraints.maxWidth * 0.9
+                                                        : item.size!.width > constraints.maxWidth * 0.9
+                                                            ? constraints.maxWidth * 0.9
+                                                            : null,
                                                     child: Text(
                                                       key: item.key,
                                                       item.text,
                                                       textAlign: item.textAlign,
-                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent),
+                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
                                                     ),
                                                   ),
                                                 )
@@ -188,7 +192,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                     double dy = editingHeight - 40;
                     for (var i = 0; i < items.length; i++) {
                       updatedList.add(items[i].copyWith(position: Offset(5, dy - items[i].size!.height), textAlign: TextAlign.left));
-                      dy -= items[i].size!.height + 5;
+                      dy -= items[i].size!.height + 6;
                     }
                   } else {
                     double totalWidgetHeight = 0.0;
@@ -205,7 +209,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                         dx = centerX - screenSize.width * 0.8 * 0.5;
                       }
                       updatedList.add(items[i].copyWith(position: Offset(dx, dy - items[i].size!.height), textAlign: TextAlign.center));
-                      dy -= items[i].size!.height + 5;
+                      dy -= items[i].size!.height + 6;
                     }
 
                     var centerList = <EditItem>[];
@@ -213,7 +217,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                     dy = remainingHeight * 0.5;
                     for (var index = 0; index < updatedList.length; index++) {
                       centerList.add(updatedList[index].copyWith(position: Offset(updatedList[index].position.dx, dy - updatedList[index].size!.height), textAlign: TextAlign.center));
-                      dy -= updatedList[index].size!.height + 5;
+                      dy -= updatedList[index].size!.height + 6;
                     }
                     updatedList = centerList;
                   }

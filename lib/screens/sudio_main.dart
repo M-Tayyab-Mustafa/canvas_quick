@@ -259,7 +259,7 @@ class _StudioMainState extends State<StudioMain> {
                                                         child: Padding(
                                                           padding: EdgeInsets.symmetric(vertical: 12),
                                                           child: Text(
-                                                            'Confirm',
+                                                            'Cancel',
                                                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xFFFE2B54)),
                                                           ),
                                                         ),
@@ -275,7 +275,8 @@ class _StudioMainState extends State<StudioMain> {
                                                         ),
                                                       ),
                                                       onPressed: () async {
-                                                        Navigator.pop(context);
+                                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ImagesScreen()));
                                                       },
                                                       child: const Center(
                                                         child: Padding(
@@ -416,7 +417,8 @@ class _StudioMainState extends State<StudioMain> {
                                                         ),
                                                       ),
                                                       onPressed: () async {
-                                                        Navigator.pop(context);
+                                                        Navigator.popUntil(context, (route) => route.isFirst);
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ImagesScreen()));
                                                       },
                                                       child: const Center(
                                                         child: Padding(

@@ -16,9 +16,11 @@ class InsertButtonScreen extends StatefulWidget {
     this.selectedShapeIndex = 2,
     this.colorPaletIndex = 2,
     this.fontSize = 18,
+    this.selectedTextColorIndex = 2,
   });
   final Product product;
   final int selectedColorIndex;
+  final int selectedTextColorIndex;
   final int selectedFontIndex;
   final int selectedShapeIndex;
   final int colorPaletIndex;
@@ -30,6 +32,7 @@ class InsertButtonScreen extends StatefulWidget {
 
 class _InsertButtonScreenState extends State<InsertButtonScreen> {
   late int selectedColorIndex;
+  late int selectedTextColorIndex;
   late int selectedFontIndex;
   late int selectedShapeIndex;
   late int colorPaletIndex;
@@ -42,6 +45,7 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
   void initState() {
     super.initState();
     selectedColorIndex = widget.selectedColorIndex;
+    selectedTextColorIndex = widget.selectedTextColorIndex;
     selectedFontIndex = widget.selectedFontIndex;
     selectedShapeIndex = widget.selectedShapeIndex;
     colorPaletIndex = widget.colorPaletIndex;
@@ -63,8 +67,9 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
               Center(
                 child: CButton(
                   key: buttonKey,
+                  textColor: materialColors[selectedTextColorIndex],
                   selectedShapeIndex: selectedShapeIndex,
-                  color: materialColors[selectedColorIndex],
+                  backgroundColor: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
                   buttonText: buttonText,
                   fontSize: fontSize,
@@ -102,6 +107,14 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                       });
                     },
                     selectedColorIndex: selectedColorIndex),
+              if (colorPaletIndex == 3)
+                CColors(
+                    index: (index) {
+                      setState(() {
+                        selectedTextColorIndex = index;
+                      });
+                    },
+                    selectedColorIndex: selectedTextColorIndex),
               GestureDetector(
                 onTap: () async {
                   await showModalBottomSheet(
@@ -191,6 +204,19 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                 child: SvgPicture.asset('assets/icons/color_palete.svg'),
               ),
             ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  colorPaletIndex = 3;
+                });
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: colorPaletIndex != 3 ? Colors.transparent : const Color(0xFF27262A), shape: BoxShape.circle),
+                child: SvgPicture.asset('assets/icons/color_palete.svg'),
+              ),
+            ),
           ],
         ),
         GestureDetector(
@@ -202,7 +228,8 @@ class _InsertButtonScreenState extends State<InsertButtonScreen> {
                 type: EditItemType.button,
                 position: Offset((screenSize.width * 0.5) - (buttonWidth * 0.5), (screenSize.height - 90) * 0.5),
                 fontFamily: fontFamilies[selectedFontIndex],
-                color: materialColors[selectedColorIndex],
+                textColor: materialColors[selectedTextColorIndex],
+                backgroundColor: materialColors[selectedColorIndex],
                 selectedButtonShapeIndex: selectedShapeIndex,
                 text: buttonText,
                 fontSize: fontSize,

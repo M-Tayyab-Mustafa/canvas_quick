@@ -249,7 +249,7 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
                   text: controller.text,
                   fontSize: fontSize,
                   textAlign: textAligns[selectedTextAlignIndex],
-                  color: materialColors[selectedColorIndex],
+                  textColor: materialColors[selectedColorIndex],
                   fontFamily: fontFamilies[selectedFontIndex],
                   position: Offset((screenSize.width * 0.5) - (textSize.width * 0.5), (screenSize.height - 90) * 0.5),
                   textBackgroundColorIndex: selectedTextBackgroundColorIndex,

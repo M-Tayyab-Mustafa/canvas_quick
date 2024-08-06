@@ -11,7 +11,8 @@ class EditItem {
   double fontSize;
   String fontFamily;
   TextAlign? textAlign;
-  Color? color;
+  Color? textColor;
+  Color? backgroundColor;
   Product? product;
   final EditItemType type;
   int? selectedButtonShapeIndex;
@@ -25,8 +26,9 @@ class EditItem {
     required this.text,
     required this.fontSize,
     required this.fontFamily,
+    this.backgroundColor,
     this.textAlign,
-    this.color,
+    this.textColor,
     this.selectedButtonShapeIndex,
     this.product,
     this.textBackgroundColorIndex,
@@ -40,7 +42,8 @@ class EditItem {
     String? text,
     double? fontSize,
     TextAlign? textAlign,
-    Color? color,
+    Color? textColor,
+    Color? backgroundColor,
     String? fontFamily,
     int? selectedButtonShapeIndex,
     Product? product,
@@ -55,7 +58,8 @@ class EditItem {
       fontSize: fontSize ?? this.fontSize,
       fontFamily: fontFamily ?? this.fontFamily,
       textAlign: textAlign ?? this.textAlign,
-      color: color ?? this.color,
+      textColor: textColor ?? this.textColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
       product: product ?? this.product,
       selectedButtonShapeIndex: selectedButtonShapeIndex ?? this.selectedButtonShapeIndex,
       textBackgroundColorIndex: textBackgroundColorIndex ?? this.textBackgroundColorIndex,

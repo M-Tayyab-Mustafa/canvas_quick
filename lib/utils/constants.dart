@@ -208,16 +208,18 @@ class CButton extends StatefulWidget {
   const CButton({
     super.key,
     required this.selectedShapeIndex,
-    required this.color,
+    required this.backgroundColor,
     required this.fontFamily,
     required this.buttonText,
     required this.fontSize,
     this.enabled = true,
     this.onChange,
     required this.controller,
+    required this.textColor,
   });
   final int selectedShapeIndex;
-  final Color color;
+  final Color textColor;
+  final Color backgroundColor;
   final String fontFamily;
   final String buttonText;
   final double fontSize;
@@ -247,7 +249,7 @@ class _CButtonState extends State<CButton> {
                 padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
                 width: buttonWidth,
                 decoration: BoxDecoration(
-                  color: widget.color,
+                  color: widget.backgroundColor,
                 ),
                 child: TextField(
                   autofocus: true,
@@ -256,12 +258,12 @@ class _CButtonState extends State<CButton> {
                   controller: controller,
                   onChanged: widget.onChange,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Colors.white,
+                        color: widget.textColor,
                         fontSize: widget.fontSize,
                         fontFamily: widget.fontFamily,
                         fontWeight: FontWeight.w500,
                       ),
-                  cursorColor: Colors.white,
+                  cursorColor: widget.textColor,
                   maxLines: null,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(
@@ -289,7 +291,7 @@ class _CButtonState extends State<CButton> {
             padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.03),
             width: buttonWidth,
             decoration: BoxDecoration(
-              color: widget.color,
+              color: widget.backgroundColor,
               borderRadius: BorderRadius.circular(
                 widget.selectedShapeIndex == 0
                     ? 0
@@ -305,12 +307,12 @@ class _CButtonState extends State<CButton> {
               onChanged: widget.onChange,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.white,
+                    color: widget.textColor,
                     fontSize: widget.fontSize,
                     fontFamily: widget.fontFamily,
                     fontWeight: FontWeight.w500,
                   ),
-              cursorColor: Colors.white,
+              cursorColor: widget.textColor,
               maxLines: null,
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -447,7 +449,6 @@ Widget verticalSlider(double fontSize, ValueChanged onChange) {
 Size calculateTextSize(String text, TextStyle style) {
   final TextPainter textPainter = TextPainter(
     text: TextSpan(text: text, style: style),
-    maxLines: 1,
     textDirection: TextDirection.ltr,
   )..layout();
   return textPainter.size;

@@ -118,11 +118,15 @@ class _EditScreenState extends State<EditScreen> {
                                                 ignoringFeedbackSemantics: false,
                                                 rootOverlay: true,
                                                 feedback: SizedBox(
-                                                  width: item.size!.width > constraints.maxWidth * 0.8 ? constraints.maxWidth * 0.8 : null,
+                                                  width: item.fontSize * item.text.length > constraints.maxWidth * 0.8
+                                                      ? constraints.maxWidth * 0.8
+                                                      : item.size!.width > constraints.maxWidth * 0.8
+                                                          ? constraints.maxWidth * 0.8
+                                                          : null,
                                                   child: Text(
                                                     item.text,
                                                     textAlign: item.textAlign,
-                                                    style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                    style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
                                                   ),
                                                 ),
                                                 childWhenDragging: const Text(''),
@@ -147,13 +151,17 @@ class _EditScreenState extends State<EditScreen> {
                                                   }
                                                 },
                                                 child: SizedBox(
-                                                  width: item.size!.width > constraints.maxWidth * 0.8 ? constraints.maxWidth * 0.8 : null,
+                                                  width: item.fontSize * item.text.length > constraints.maxWidth * 0.8
+                                                      ? constraints.maxWidth * 0.8
+                                                      : item.size!.width > constraints.maxWidth * 0.8
+                                                          ? constraints.maxWidth * 0.8
+                                                          : null,
                                                   child: InkWell(
                                                     onDoubleTap: () => onDoubleTap(item),
                                                     child: Text(
                                                       item.text,
                                                       textAlign: item.textAlign,
-                                                      style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
                                                     ),
                                                   ),
                                                 ),
@@ -161,7 +169,8 @@ class _EditScreenState extends State<EditScreen> {
                                             : Draggable(
                                                 feedback: CButton(
                                                   enabled: false,
-                                                  color: item.color!,
+                                                  backgroundColor: item.backgroundColor!,
+                                                  textColor: item.textColor!,
                                                   fontFamily: item.fontFamily,
                                                   selectedShapeIndex: item.selectedButtonShapeIndex!,
                                                   buttonText: item.text,
@@ -193,7 +202,8 @@ class _EditScreenState extends State<EditScreen> {
                                                   onDoubleTap: () => onDoubleTap(item),
                                                   child: CButton(
                                                     enabled: false,
-                                                    color: item.color!,
+                                                    backgroundColor: item.backgroundColor!,
+                                                    textColor: item.textColor!,
                                                     fontFamily: item.fontFamily,
                                                     selectedShapeIndex: item.selectedButtonShapeIndex!,
                                                     buttonText: item.text,
@@ -466,7 +476,7 @@ class _EditScreenState extends State<EditScreen> {
     );
   }
 
-  onDoubleTap(item) async {
+  onDoubleTap(EditItem item) async {
     int indexOfItem = items.indexOf(items.firstWhere((element) => element == item));
     if (item.type == EditItemType.text) {
       setState(() {
@@ -476,8 +486,8 @@ class _EditScreenState extends State<EditScreen> {
           context: context,
           pageBuilder: (context, animation, secondaryAnimation) => InsertTextScreen(
                 controller: TextEditingController(text: item.text),
-                fontSize: item.fontSize!,
-                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                fontSize: item.fontSize,
+                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.textColor)),
                 selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
               )).then((returnValue) {
         if (returnValue != null) {
@@ -498,10 +508,11 @@ class _EditScreenState extends State<EditScreen> {
           context: context,
           pageBuilder: (context, animation, secondaryAnimation) => InsertButtonScreen(
                 product: item.product!,
-                buttonText: item.text!,
-                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.color)),
+                buttonText: item.text,
+                selectedTextColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.textColor)),
+                selectedColorIndex: materialColors.indexOf(materialColors.firstWhere((element) => element == item.backgroundColor)),
                 selectedFontIndex: fontFamilies.indexOf(fontFamilies.firstWhere((element) => element == item.fontFamily)),
-                fontSize: item.fontSize!,
+                fontSize: item.fontSize,
                 selectedShapeIndex: item.selectedButtonShapeIndex!,
               )).then((returnValue) {
         if (returnValue != null) {

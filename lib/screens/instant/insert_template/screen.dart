@@ -63,41 +63,48 @@ class _InsertTemplateState extends State<InsertTemplate> {
                                   width: constraints.maxWidth,
                                 ),
                               ),
-                            SizedBox(
-                              width: constraints.maxWidth,
-                              child: Column(
-                                mainAxisAlignment: selectedTemplate == templates.first ? MainAxisAlignment.end : MainAxisAlignment.center,
-                                crossAxisAlignment: selectedTemplate == templates.first ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-                                children: items
-                                    .map(
-                                      (item) => item.type == EditItemType.text
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(bottom: 5),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                child: Text(
-                                                  key: item.key,
-                                                  item.text,
-                                                  textAlign: item.textAlign,
-                                                  style: TextStyle(fontSize: item.fontSize, color: item.color, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent),
+                            Align(
+                              alignment: selectedTemplate == templates.first ? Alignment.bottomLeft : Alignment.center,
+                              child: SingleChildScrollView(
+                                child: SizedBox(
+                                  width: constraints.maxWidth,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: selectedTemplate == templates.first ? MainAxisAlignment.end : MainAxisAlignment.center,
+                                    crossAxisAlignment: selectedTemplate == templates.first ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                                    children: items
+                                        .map(
+                                          (item) => item.type == EditItemType.text
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(bottom: 5),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                    child: Text(
+                                                      key: item.key,
+                                                      item.text,
+                                                      textAlign: item.textAlign,
+                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Padding(
+                                                  padding: const EdgeInsets.only(bottom: 5),
+                                                  child: CButton(
+                                                    key: item.key,
+                                                    enabled: false,
+                                                    backgroundColor: item.backgroundColor!,
+                                                    textColor: item.textColor!,
+                                                    fontFamily: item.fontFamily,
+                                                    selectedShapeIndex: item.selectedButtonShapeIndex!,
+                                                    buttonText: item.text,
+                                                    fontSize: item.fontSize,
+                                                    controller: TextEditingController(text: item.text),
+                                                  ),
                                                 ),
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding: const EdgeInsets.only(bottom: 5),
-                                              child: CButton(
-                                                key: item.key,
-                                                enabled: false,
-                                                color: item.color!,
-                                                fontFamily: item.fontFamily,
-                                                selectedShapeIndex: item.selectedButtonShapeIndex!,
-                                                buttonText: item.text,
-                                                fontSize: item.fontSize,
-                                                controller: TextEditingController(text: item.text),
-                                              ),
-                                            ),
-                                    )
-                                    .toList(),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
                               ),
                             )
                           ],
@@ -167,10 +174,15 @@ class _InsertTemplateState extends State<InsertTemplate> {
                         items[i] = items[i].copyWith(size: Size(renderBox.size.width, renderBox.size.height + 5));
                       }
                     } else {
-                      var textSize = calculateTextSize(items[i].text, TextStyle(fontSize: items[i].fontSize, color: items[i].color, fontFamily: items[i].fontFamily, backgroundColor: items[i].textBackgroundColorIndex != null ? materialColors[items[i].textBackgroundColorIndex!] : Colors.transparent));
+                      var textSize = calculateTextSize(items[i].text, TextStyle(fontSize: items[i].fontSize, color: items[i].textColor, fontFamily: items[i].fontFamily, backgroundColor: items[i].textBackgroundColorIndex != null ? materialColors[items[i].textBackgroundColorIndex!] : Colors.transparent, height: 0.9));
                       items[i] = items[i].copyWith(size: Size(textSize.width, textSize.height + 5));
+                      if (items[i].fontSize * items[i].text.length > screenSize.width * 0.8) {
+                        final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
+                        items[i] = items[i].copyWith(size: Size(renderBox!.size.width, renderBox.size.height * 0.65));
+                      }
                     }
                   }
+
                   //* Alignment Of the Widgets
                   if (selectedTemplate == templates.first) {
                     double dy = editingHeight - 40;
@@ -188,6 +200,9 @@ class _InsertTemplateState extends State<InsertTemplate> {
                       double dx = centerX - (items[i].size!.width * 0.5);
                       if (items[i].type == EditItemType.text && items[i].size!.width > screenSize.width * 0.8) {
                         dx = ((screenSize.width * 0.8) * 0.8) - (items[i].size!.width * 0.5);
+                      }
+                      if (items[i].type == EditItemType.text && items[i].fontSize * items[i].text.length > screenSize.width * 0.8) {
+                        dx = centerX - screenSize.width * 0.8 * 0.5;
                       }
                       updatedList.add(items[i].copyWith(position: Offset(dx, dy - items[i].size!.height), textAlign: TextAlign.center));
                       dy -= items[i].size!.height + 5;

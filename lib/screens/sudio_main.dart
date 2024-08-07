@@ -6,11 +6,15 @@ import 'package:screens/screens/imagesscreen.dart';
 import 'package:screens/utils/constants.dart';
 
 import '../model/editing_item.dart';
+import 'instant/edit/screen.dart';
 
 class StudioMain extends StatefulWidget {
-  const StudioMain({super.key, required this.imageFile, required this.items});
+  const StudioMain({super.key, required this.imageFile, required this.items, this.backgroundImage, this.backgroundColor, this.backgroundVideoFile});
   final File imageFile;
-  final List<EditItem> items;
+  final File? backgroundImage;
+  final Color? backgroundColor;
+  final File? backgroundVideoFile;
+  final List<EditItem>? items;
 
   @override
   State<StudioMain> createState() => _StudioMainState();
@@ -19,6 +23,7 @@ class StudioMain extends StatefulWidget {
 class _StudioMainState extends State<StudioMain> {
   bool showMenu = false;
   int? selectedIndex;
+  bool isPinned = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,13 +137,15 @@ class _StudioMainState extends State<StudioMain> {
                                                       ),
                                                       onPressed: () async {
                                                         Navigator.pop(context);
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudioMain(imageFile: widget.imageFile, items: widget.items)));
+                                                        setState(() {
+                                                          isPinned = false;
+                                                        });
                                                       },
                                                       child: const Center(
                                                         child: Padding(
                                                           padding: EdgeInsets.symmetric(vertical: 12),
                                                           child: Text(
-                                                            'Confirm',
+                                                            'Cancel',
                                                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xFF622CEA)),
                                                           ),
                                                         ),
@@ -155,13 +162,20 @@ class _StudioMainState extends State<StudioMain> {
                                                       ),
                                                       onPressed: () async {
                                                         Navigator.pop(context);
+                                                        setState(() {
+                                                          isPinned = true;
+                                                        });
                                                       },
                                                       child: const Center(
                                                         child: Padding(
                                                           padding: EdgeInsets.symmetric(vertical: 12),
                                                           child: Text(
-                                                            'Confirm',
-                                                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
+                                                            'Yes, Pin it.',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight: FontWeight.w400,
+                                                              color: Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -184,7 +198,13 @@ class _StudioMainState extends State<StudioMain> {
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),
                                   padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(color: selectedIndex == 0 ? const Color(0xffF03B77) : const Color(0xff27262A).withOpacity(0.85), shape: BoxShape.circle),
+                                  decoration: BoxDecoration(
+                                      color: isPinned
+                                          ? const Color(0xFF622CEA)
+                                          : selectedIndex == 0
+                                              ? const Color(0xffF03B77)
+                                              : const Color(0xff27262A).withOpacity(0.85),
+                                      shape: BoxShape.circle),
                                   child: Center(
                                     child: SvgPicture.asset(
                                       'assets/icons/pin.svg',
@@ -282,7 +302,7 @@ class _StudioMainState extends State<StudioMain> {
                                                         child: Padding(
                                                           padding: EdgeInsets.symmetric(vertical: 12),
                                                           child: Text(
-                                                            'Confirm',
+                                                            'Unpublish',
                                                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
                                                           ),
                                                         ),
@@ -321,6 +341,17 @@ class _StudioMainState extends State<StudioMain> {
                                   setState(() {
                                     selectedIndex = 2;
                                   });
+                                  Navigator.popUntil(context, (route) => route.isFirst);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ImagesScreen()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditScreen(
+                                                imageFile: widget.backgroundImage,
+                                                items: widget.items,
+                                                backgroundColor: widget.backgroundColor,
+                                                videoFile: widget.backgroundVideoFile,
+                                              )));
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(left: 8),

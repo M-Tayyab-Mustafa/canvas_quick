@@ -9,9 +9,12 @@ import 'package:screens/utils/constants.dart';
 import '../model/editing_item.dart';
 
 class NewInstantScreen extends StatefulWidget {
-  const NewInstantScreen({super.key, required this.imageFile, required this.items});
+  const NewInstantScreen({super.key, required this.imageFile, required this.items, this.backgroundImage, this.backgroundColor, this.backgroundVideoFile});
   final File imageFile;
-  final List<EditItem> items;
+  final File? backgroundImage;
+  final Color? backgroundColor;
+  final File? backgroundVideoFile;
+  final List<EditItem>? items;
 
   @override
   State<NewInstantScreen> createState() => _NewInstantScreenState();
@@ -132,7 +135,16 @@ class _NewInstantScreenState extends State<NewInstantScreen> {
                                       ),
                                       onPressed: () async {
                                         Navigator.pop(context);
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => StudioMain(imageFile: widget.imageFile, items: widget.items)));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => StudioMain(
+                                                      imageFile: widget.imageFile,
+                                                      items: widget.items,
+                                                      backgroundColor: widget.backgroundColor,
+                                                      backgroundImage: widget.backgroundImage,
+                                                      backgroundVideoFile: widget.backgroundVideoFile,
+                                                    )));
                                       },
                                       child: const Center(
                                         child: Padding(

@@ -279,7 +279,16 @@ class _EditScreenState extends State<EditScreen> {
                           try {
                             await _prepareImage(directoryPath: (await getTemporaryDirectory()).path, title: 'Processing Image').then((mediaPath) {
                               if (mediaPath != null) {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewInstantScreen(imageFile: File(mediaPath), items: items)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewInstantScreen(
+                                              imageFile: File(mediaPath),
+                                              items: items,
+                                              backgroundColor: widget.backgroundColor,
+                                              backgroundImage: widget.imageFile,
+                                              backgroundVideoFile: widget.videoFile,
+                                            )));
                               } else {
                                 showDialog(
                                   context: context,

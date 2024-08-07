@@ -182,7 +182,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                       items[i] = items[i].copyWith(size: Size(textSize.width, textSize.height + 5));
                       if (items[i].fontSize * items[i].text.length > screenSize.width * 0.8) {
                         final RenderBox? renderBox = items[i].key.currentContext?.findRenderObject() as RenderBox?;
-                        items[i] = items[i].copyWith(size: Size(renderBox!.size.width, renderBox.size.height * 0.65));
+                        items[i] = items[i].copyWith(size: Size(items[i].size!.width, renderBox!.size.height));
                       }
                     }
                   }

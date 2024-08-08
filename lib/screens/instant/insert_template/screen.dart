@@ -191,7 +191,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                   if (selectedTemplate == templates.first) {
                     double dy = editingHeight - 40;
                     for (var i = 0; i < items.length; i++) {
-                      updatedList.add(items[i].copyWith(position: Offset(5, dy - items[i].size!.height), textAlign: TextAlign.left));
+                      updatedList.add(items[i].copyWith(position: Offset(screenSize.width * 0.03, dy - items[i].size!.height), textAlign: TextAlign.left));
                       dy -= items[i].size!.height + 6;
                     }
                   } else {

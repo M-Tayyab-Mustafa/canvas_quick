@@ -68,45 +68,48 @@ class _InsertTemplateState extends State<InsertTemplate> {
                               child: SingleChildScrollView(
                                 child: SizedBox(
                                   width: constraints.maxWidth,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: selectedTemplate == templates.first ? MainAxisAlignment.end : MainAxisAlignment.center,
-                                    crossAxisAlignment: selectedTemplate == templates.first ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-                                    children: items
-                                        .map(
-                                          (item) => item.type == EditItemType.text
-                                              ? Padding(
-                                                  padding: const EdgeInsets.only(left: 5, bottom: 5),
-                                                  child: SizedBox(
-                                                    width: item.fontSize * item.text.length > constraints.maxWidth * 0.9
-                                                        ? constraints.maxWidth * 0.9
-                                                        : item.size!.width > constraints.maxWidth * 0.9
-                                                            ? constraints.maxWidth * 0.9
-                                                            : null,
-                                                    child: Text(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20, bottom: 37),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: selectedTemplate == templates.first ? MainAxisAlignment.end : MainAxisAlignment.center,
+                                      crossAxisAlignment: selectedTemplate == templates.first ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                                      children: items
+                                          .map(
+                                            (item) => item.type == EditItemType.text
+                                                ? Padding(
+                                                    padding: const EdgeInsets.only(left: 5, bottom: 5),
+                                                    child: SizedBox(
+                                                      width: item.fontSize * item.text.length > constraints.maxWidth * 0.9
+                                                          ? constraints.maxWidth * 0.9
+                                                          : item.size!.width > constraints.maxWidth * 0.9
+                                                              ? constraints.maxWidth * 0.9
+                                                              : null,
+                                                      child: Text(
+                                                        key: item.key,
+                                                        item.text,
+                                                        textAlign: item.textAlign,
+                                                        style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Padding(
+                                                    padding: const EdgeInsets.only(bottom: 5),
+                                                    child: CButton(
                                                       key: item.key,
-                                                      item.text,
-                                                      textAlign: item.textAlign,
-                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                      enabled: false,
+                                                      backgroundColor: item.backgroundColor!,
+                                                      textColor: item.textColor!,
+                                                      fontFamily: item.fontFamily,
+                                                      selectedShapeIndex: item.selectedButtonShapeIndex!,
+                                                      buttonText: item.text,
+                                                      fontSize: item.fontSize,
+                                                      controller: TextEditingController(text: item.text),
                                                     ),
                                                   ),
-                                                )
-                                              : Padding(
-                                                  padding: const EdgeInsets.only(bottom: 5),
-                                                  child: CButton(
-                                                    key: item.key,
-                                                    enabled: false,
-                                                    backgroundColor: item.backgroundColor!,
-                                                    textColor: item.textColor!,
-                                                    fontFamily: item.fontFamily,
-                                                    selectedShapeIndex: item.selectedButtonShapeIndex!,
-                                                    buttonText: item.text,
-                                                    fontSize: item.fontSize,
-                                                    controller: TextEditingController(text: item.text),
-                                                  ),
-                                                ),
-                                        )
-                                        .toList(),
+                                          )
+                                          .toList(),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -191,7 +194,7 @@ class _InsertTemplateState extends State<InsertTemplate> {
                   if (selectedTemplate == templates.first) {
                     double dy = editingHeight - 40;
                     for (var i = 0; i < items.length; i++) {
-                      updatedList.add(items[i].copyWith(position: Offset(screenSize.width * 0.03, dy - items[i].size!.height), textAlign: TextAlign.left));
+                      updatedList.add(items[i].copyWith(position: Offset(20, dy - items[i].size!.height), textAlign: TextAlign.left));
                       dy -= items[i].size!.height + 6;
                     }
                   } else {

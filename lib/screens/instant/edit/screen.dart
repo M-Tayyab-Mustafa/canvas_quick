@@ -258,7 +258,7 @@ class _EditScreenState extends State<EditScreen> {
                           await Permission.storage.request();
                           await Permission.manageExternalStorage.request();
                           var directory = await Directory('/storage/emulated/0/DCIM/Camera').create(recursive: true);
-                          await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true, items: items);
+                          await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true, items: items, defaultImage: widget.imageFile);
                         },
                         child: Container(
                           height: 50,
@@ -656,64 +656,66 @@ class _EditScreenState extends State<EditScreen> {
     }
     super.dispose();
   }
-}
 
-Future<String?> _prepareImage({
-  required String directoryPath,
-  required String title,
-  bool isSavingImage = false,
-  List<EditItem> items = const <EditItem>[],
-}) async {
-  ValueNotifier<double> progressNotifier = ValueNotifier<double>(0);
-  progressNotifier.addListener(() {
-    EasyLoading.showProgress(
-      progressNotifier.value,
-      status: '$title ${progressNotifier.value * 100}',
-    );
-    if (progressNotifier.value == 1) {
-      EasyLoading.dismiss();
+  Future<String?> _prepareImage({
+    required String directoryPath,
+    required String title,
+    bool isSavingImage = false,
+    File? defaultImage,
+    List<EditItem> items = const <EditItem>[],
+  }) async {
+    ValueNotifier<double> progressNotifier = ValueNotifier<double>(0);
+    progressNotifier.addListener(() {
+      EasyLoading.showProgress(
+        progressNotifier.value,
+        status: '$title ${progressNotifier.value * 100}',
+      );
+      if (progressNotifier.value == 1) {
+        EasyLoading.dismiss();
+      }
+    });
+    ByteData? byteData;
+
+    try {
+      progressNotifier.value = 0.1; // 10% - Start processing
+
+      RenderRepaintBoundary? boundary = repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      progressNotifier.value = 0.2; // 20% - Boundary found
+
+      ui.Image? image = await boundary?.toImage(pixelRatio: 4);
+      progressNotifier.value = 0.4; // 40% - Image captured
+
+      byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
+      progressNotifier.value = 0.6; // 60% - Image data fetched
+
+      Uint8List bytes = byteData!.buffer.asUint8List();
+      progressNotifier.value = 0.7; // 70% - Byte data converted
+      String imgPath = '$directoryPath/shot_${DateTime.now().toIso8601String().split('T').first}T${DateTime.now().toIso8601String().split('T').last.replaceAll(':', '_').split('.').first}.jpg';
+      File imgFile = File(imgPath);
+      await imgFile.writeAsBytes(bytes);
+
+      if (isSavingImage) {
+        String base64Image = base64Encode(imgFile.readAsBytesSync());
+        Map<String, String> jsonMap = {
+          'image': base64Image,
+          'items': jsonEncode(items.map((e) => e.toMap()).toList()),
+          'background_image': widget.imageFile?.path ?? '',
+          'background_color': widget.backgroundColor?.value.toString() ?? '',
+        };
+        String jsonString = jsonEncode(jsonMap);
+        Directory appDocDir = (await getExternalStorageDirectory())!;
+        String filePath = '${appDocDir.path}/shot_${DateTime.now().toIso8601String().split('T').first}T${DateTime.now().toIso8601String().split('T').last.replaceAll(':', '_').split('.').first}.json';
+        File jsonFile = File(filePath);
+        await jsonFile.writeAsString(jsonString);
+        log(jsonFile.path);
+      }
+      // Save JSON to file
+
+      progressNotifier.value = 1.0; // 100% - Image saved
+      return imgFile.path;
+    } catch (e) {
+      log(e.toString());
+      return null;
     }
-  });
-  ByteData? byteData;
-
-  try {
-    progressNotifier.value = 0.1; // 10% - Start processing
-
-    RenderRepaintBoundary? boundary = repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-    progressNotifier.value = 0.2; // 20% - Boundary found
-
-    ui.Image? image = await boundary?.toImage(pixelRatio: 4);
-    progressNotifier.value = 0.4; // 40% - Image captured
-
-    byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
-    progressNotifier.value = 0.6; // 60% - Image data fetched
-
-    Uint8List bytes = byteData!.buffer.asUint8List();
-    progressNotifier.value = 0.7; // 70% - Byte data converted
-    String imgPath = '$directoryPath/shot_${DateTime.now().toIso8601String().split('T').first}T${DateTime.now().toIso8601String().split('T').last.replaceAll(':', '_').split('.').first}.jpg';
-    File imgFile = File(imgPath);
-    await imgFile.writeAsBytes(bytes);
-
-    if (isSavingImage) {
-      String base64Image = base64Encode(imgFile.readAsBytesSync());
-
-      Map<String, String> jsonMap = {
-        'image': base64Image,
-        'items': jsonEncode(items.map((e) => e.toMap()).toList()),
-      };
-      String jsonString = jsonEncode(jsonMap);
-      Directory appDocDir = (await getExternalStorageDirectory())!;
-      String filePath = '${appDocDir.path}/shot_${DateTime.now().toIso8601String().split('T').first}T${DateTime.now().toIso8601String().split('T').last.replaceAll(':', '_').split('.').first}.json';
-      File jsonFile = File(filePath);
-      await jsonFile.writeAsString(jsonString);
-      log(jsonFile.path);
-    }
-    // Save JSON to file
-
-    progressNotifier.value = 1.0; // 100% - Image saved
-    return imgFile.path;
-  } catch (e) {
-    log(e.toString());
-    return null;
   }
 }

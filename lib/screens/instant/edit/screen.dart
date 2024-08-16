@@ -699,7 +699,7 @@ class _EditScreenState extends State<EditScreen> {
         Map<String, String> jsonMap = {
           'image': base64Image,
           'items': jsonEncode(items.map((e) => e.toMap()).toList()),
-          'background_image': widget.imageFile?.path ?? '',
+          'background_image': widget.imageFile != null ? base64Encode(widget.imageFile!.readAsBytesSync()).toString() : '',
           'background_color': widget.backgroundColor?.value.toString() ?? '',
         };
         String jsonString = jsonEncode(jsonMap);

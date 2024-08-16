@@ -258,7 +258,7 @@ class _EditScreenState extends State<EditScreen> {
                           await Permission.storage.request();
                           await Permission.manageExternalStorage.request();
                           var directory = await Directory('/storage/emulated/0/DCIM/Camera').create(recursive: true);
-                          await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true);
+                          await _prepareImage(directoryPath: directory.path, title: 'Saving Image', isSavingImage: true, items: items);
                         },
                         child: Container(
                           height: 50,
@@ -648,12 +648,21 @@ class _EditScreenState extends State<EditScreen> {
       });
     });
   }
+
+  @override
+  void dispose() {
+    if (EasyLoading.isShow) {
+      EasyLoading.dismiss();
+    }
+    super.dispose();
+  }
 }
 
 Future<String?> _prepareImage({
   required String directoryPath,
   required String title,
   bool isSavingImage = false,
+  List<EditItem> items = const <EditItem>[],
 }) async {
   ValueNotifier<double> progressNotifier = ValueNotifier<double>(0);
   progressNotifier.addListener(() {
@@ -690,6 +699,7 @@ Future<String?> _prepareImage({
 
       Map<String, String> jsonMap = {
         'image': base64Image,
+        'items': jsonEncode(items.map((e) => e.toMap()).toList()),
       };
       String jsonString = jsonEncode(jsonMap);
       Directory appDocDir = (await getExternalStorageDirectory())!;

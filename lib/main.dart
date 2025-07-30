@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:screens/screens/instant/screen.dart';
+
+import 'screens/instant/screen.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,11 +1,12 @@
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screens/model/editing_item.dart';
+import 'package:canvas_quick/model/editing_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants.dart';
 
 class InsertTextScreen extends StatefulWidget {
-  const InsertTextScreen({super.key, required this.controller, this.fontSize = 18, this.selectedColorIndex = 0, this.selectedFontIndex = 0, this.selectedTextAlignIndex = 0, this.selectedTextBackgroundColorIndex = 1});
+  const InsertTextScreen(
+      {super.key, required this.controller, this.fontSize = 18, this.selectedColorIndex = 0, this.selectedFontIndex = 0, this.selectedTextAlignIndex = 0, this.selectedTextBackgroundColorIndex = 1});
   final TextEditingController controller;
   final double fontSize;
   final int selectedColorIndex;
@@ -117,13 +118,30 @@ class _InsertTextScreenState extends State<InsertTextScreen> {
               maxLines: null,
               onChanged: (value) {
                 setState(() {
-                  textSize = calculateTextSize(value, TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9));
+                  textSize = calculateTextSize(
+                      value,
+                      TextStyle(
+                          fontSize: fontSize,
+                          color: materialColors[selectedColorIndex],
+                          fontFamily: fontFamilies[selectedFontIndex],
+                          backgroundColor: materialColors[selectedTextBackgroundColorIndex],
+                          height: 0.9));
                 });
               },
               textAlign: textAligns[selectedTextAlignIndex],
-              style: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
+              style: TextStyle(
+                  fontSize: fontSize,
+                  color: materialColors[selectedColorIndex],
+                  fontFamily: fontFamilies[selectedFontIndex],
+                  backgroundColor: materialColors[selectedTextBackgroundColorIndex],
+                  height: 0.9),
               decoration: InputDecoration(
-                hintStyle: TextStyle(fontSize: fontSize, color: materialColors[selectedColorIndex], fontFamily: fontFamilies[selectedFontIndex], backgroundColor: materialColors[selectedTextBackgroundColorIndex], height: 0.9),
+                hintStyle: TextStyle(
+                    fontSize: fontSize,
+                    color: materialColors[selectedColorIndex],
+                    fontFamily: fontFamilies[selectedFontIndex],
+                    backgroundColor: materialColors[selectedTextBackgroundColorIndex],
+                    height: 0.9),
                 border: InputBorder.none,
                 errorBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,

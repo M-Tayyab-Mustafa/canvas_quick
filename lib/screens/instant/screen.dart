@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:screens/screens/imagesscreen.dart';
 
 import '../../utils/constants.dart';
+import '../images_screen.dart';
 
 class InstantScreen extends StatelessWidget {
   const InstantScreen({super.key});

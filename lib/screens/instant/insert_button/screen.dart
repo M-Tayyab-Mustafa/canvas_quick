@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:screens/model/editing_item.dart';
-import 'package:screens/model/product.dart';
-import 'package:screens/utils/constants.dart';
+import 'package:canvas_quick/model/editing_item.dart';
+import 'package:canvas_quick/model/product.dart';
+import 'package:canvas_quick/utils/constants.dart';
 
 import '../../tags_screen.dart';
 

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screens/screens/imagesscreen.dart';
-import 'package:screens/utils/constants.dart';
+import 'package:canvas_quick/utils/constants.dart';
 
 import '../model/editing_item.dart';
+import 'images_screen.dart';
 import 'instant/edit/screen.dart';
 
 class StudioMain extends StatefulWidget {

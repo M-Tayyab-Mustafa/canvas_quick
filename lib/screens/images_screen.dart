@@ -6,11 +6,10 @@ import 'package:path_provider/path_provider.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import 'package:screens/screens/instant/edit/screen.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../utils/constants.dart';
+import 'instant/edit/screen.dart';
 
 class ImagesScreen extends StatefulWidget {
   const ImagesScreen({super.key});
@@ -265,7 +264,12 @@ class _ImagesScreenState extends State<ImagesScreen> {
     var directory = Directory('/storage/emulated/0/DCIM/Camera');
 
     if (await directory.exists()) {
-      fileImages = directory.listSync().where((file) => file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png') || file.path.endsWith('.gif')).toList().map((e) => e.path).toList();
+      fileImages = directory
+          .listSync()
+          .where((file) => file.path.endsWith('.jpg') || file.path.endsWith('.jpeg') || file.path.endsWith('.png') || file.path.endsWith('.gif'))
+          .toList()
+          .map((e) => e.path)
+          .toList();
 
       setState(() {});
     }

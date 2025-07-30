@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screens/model/product.dart';
-import 'package:screens/model/template.dart';
+import 'package:canvas_quick/model/product.dart';
+import 'package:canvas_quick/model/template.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../model/audience.dart';
 

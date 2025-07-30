@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:canvas_quick/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screens/screens/audiance_screen.dart';
-import 'package:screens/screens/sudio_main.dart';
-import 'package:screens/utils/constants.dart';
 
 import '../model/editing_item.dart';
+import 'audience_screen.dart';
+import 'studio_main.dart';
 
 class NewInstantScreen extends StatefulWidget {
   const NewInstantScreen({super.key, required this.imageFile, required this.items, this.backgroundImage, this.backgroundColor, this.backgroundVideoFile});

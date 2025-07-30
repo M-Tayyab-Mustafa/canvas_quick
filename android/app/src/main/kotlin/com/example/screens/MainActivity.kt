@@ -1,4 +1,4 @@
-package com.example.screens
+package com.example.canvasquick
 
 import io.flutter.embedding.android.FlutterActivity
 

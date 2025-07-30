@@ -11,15 +11,15 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:screens/model/product.dart';
-import 'package:screens/screens/instant/insert_button/screen.dart';
-import 'package:screens/screens/instant/insert_text/screen.dart';
-import 'package:screens/screens/tags_screen.dart';
+import 'package:canvas_quick/model/product.dart';
 import 'package:video_player/video_player.dart';
 import '../../../model/editing_item.dart';
 import '../../../utils/constants.dart';
 import '../../new_instant.dart';
+import '../../tags_screen.dart';
+import '../insert_button/screen.dart';
 import '../insert_template/screen.dart';
+import '../insert_text/screen.dart';
 
 final GlobalKey repaintBoundaryKey = GlobalKey();
 bool showDeleteIcon = false;
@@ -126,7 +126,12 @@ class _EditScreenState extends State<EditScreen> {
                                                   child: Text(
                                                     item.text,
                                                     textAlign: item.textAlign,
-                                                    style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                    style: TextStyle(
+                                                        fontSize: item.fontSize,
+                                                        color: item.textColor,
+                                                        fontFamily: item.fontFamily,
+                                                        backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent,
+                                                        height: 0.9),
                                                   ),
                                                 ),
                                                 childWhenDragging: const Text(''),
@@ -161,7 +166,12 @@ class _EditScreenState extends State<EditScreen> {
                                                     child: Text(
                                                       item.text,
                                                       textAlign: item.textAlign,
-                                                      style: TextStyle(fontSize: item.fontSize, color: item.textColor, fontFamily: item.fontFamily, backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent, height: 0.9),
+                                                      style: TextStyle(
+                                                          fontSize: item.fontSize,
+                                                          color: item.textColor,
+                                                          fontFamily: item.fontFamily,
+                                                          backgroundColor: item.textBackgroundColorIndex != null ? materialColors[item.textBackgroundColorIndex!] : Colors.transparent,
+                                                          height: 0.9),
                                                     ),
                                                   ),
                                                 ),

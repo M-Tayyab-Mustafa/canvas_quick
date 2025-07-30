@@ -1,4 +1,4 @@
-name: screens
+name: canvas_quick
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -35,6 +35,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+  image_picker: ^1.1.2
+  flutter_svg: ^2.0.10+1
+  image_cropper: ^7.1.0
+  path_provider: ^2.1.3
+  permission_handler: ^11.3.1
+  syncfusion_flutter_sliders: ^26.1.41
+  flutter_easyloading: ^3.0.5
+  flutter_colorpicker:
+    path: ./packages/flutter_colorpicker-master
+  video_thumbnail: ^0.5.3
+  video_player: ^2.9.1
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +72,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-  #   - images/a_dot_ham.jpeg
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -74,17 +85,62 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+  
+   - family: Alegreya
+     fonts:
+       - asset: assets/fonts/Alegreya-VariableFont_wght.ttf
+   - family: B612
+     fonts:
+       - asset: assets/fonts/B612-Regular.ttf
+   - family: TitilliumWeb
+     fonts:
+       - asset: assets/fonts/TitilliumWeb-Regular.ttf
+   - family: Varela
+     fonts:
+       - asset: assets/fonts/Varela-Regular.ttf
+   - family: Vollkorn
+     fonts:
+       - asset: assets/fonts/Vollkorn-Regular.ttf
+   - family: Rakkas
+     fonts:
+       - asset: assets/fonts/Rakkas-Regular.ttf
+   - family: ConcertOne
+     fonts:
+       - asset: assets/fonts/ConcertOne-Regular.ttf
+   - family: YatraOne
+     fonts:
+       - asset: assets/fonts/YatraOne-Regular.ttf
+   - family: OldStandardTT
+     fonts:
+       - asset: assets/fonts/OldStandardTT-Italic.ttf
+   - family: Neonderthaw
+     fonts:
+       - asset: assets/fonts/Neonderthaw-Regular.ttf
+   - family: DancingScript
+     fonts:
+       - asset: assets/fonts/DancingScript-VariableFont_wght.ttf
+   - family: SedgwickAve
+     fonts:
+       - asset: assets/fonts/SedgwickAve-Regular.ttf
+   - family: IndieFlower
+     fonts:
+       - asset: assets/fonts/IndieFlower-Regular.ttf
+   - family: Sacramento
+     fonts:
+       - asset: assets/fonts/Sacramento-Regular.ttf
+   - family: PressStart2P
+     fonts:
+       - asset: assets/fonts/PressStart2P-Regular.ttf
+   - family: FrederickatheGreat
+     fonts:
+       - asset: assets/fonts/FrederickatheGreat-Regular.ttf
+   - family: ReenieBeanie
+     fonts:
+       - asset: assets/fonts/ReenieBeanie-Regular.ttf
+   - family: BungeeShade
+     fonts:
+       - asset: assets/fonts/BungeeShade-Regular.ttf
+   - family: UnifrakturMaguntia
+     fonts:
+       - asset: assets/fonts/UnifrakturMaguntia-Regular.ttf

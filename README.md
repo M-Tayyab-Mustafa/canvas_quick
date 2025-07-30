@@ -1,16 +1,43 @@
-# screens
+# CanvasQuick
 
-A new Flutter project.
+CanvasQuick is a modern, lightweight Flutter mobile application designed to provide a streamlined visual studio environment for displaying and managing images. With a focus on intuitive interaction, content control, and extensible canvas editing, CanvasQuick is ideal for creators and editors who want quick and easy tools to manage visual content.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📱 Features
 
-A few resources to get you started if this is your first Flutter project:
+### 🖼️ Image Canvas
+- Displays a full-screen image with optional background layers:
+  - **Background Image**
+  - **Background Color**
+  - **Background Video File**
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 🎛️ Interactive Top Menu
+- **Back / Cancel Navigation**
+- **Expandable Action Menu** (toggleable visibility)
+- **Pin as Main Page**:
+  - Highlights the selected canvas as the main view
+  - Includes visual cue (icon background)
+  - Confirmation dialog to avoid accidental changes
+- **Unpublish Functionality**:
+  - Reverts the content to a draft state
+  - Navigates user to the draft gallery (`ImagesScreen`)
+  - Confirmation dialog included
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🧰 Bottom Menu
+- Custom `bottomMenu()` widget for canvas-related tools and interactions (configurable).
+
+### 🧩 Edit Items Support *(Extensible Feature)*
+- Canvas accepts a list of `EditItem` objects (e.g., stickers, text, shapes).
+- Placeholder for future editing capabilities.
+
+### 📦 Asset Management
+- Utilizes **SVG icons** via `flutter_svg` for sharp and scalable UI.
+- Supports media layering with various input types.
+
+---
+
+## 🧭 Navigation Architecture
+
+- Built using Flutter’s `Navigator` for seamless routing and pop-up dialogs.
+- Clean and modular widget structure to support multiple view states.

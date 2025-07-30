@@ -36,16 +36,16 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   image_picker: ^1.1.2
-  flutter_svg: ^2.0.10+1
-  image_cropper: ^7.1.0
-  path_provider: ^2.1.3
-  permission_handler: ^11.3.1
-  syncfusion_flutter_sliders: ^26.1.41
+  flutter_svg: ^2.2.0
+  image_cropper: ^9.1.0
+  path_provider: ^2.1.5
+  permission_handler: ^12.0.1
+  syncfusion_flutter_sliders: ^30.1.42
   flutter_easyloading: ^3.0.5
   flutter_colorpicker:
     path: ./packages/flutter_colorpicker-master
-  video_thumbnail: ^0.5.3
-  video_player: ^2.9.1
+  video_thumbnail: ^0.5.6
+  video_player: ^2.10.0
 
 dev_dependencies:
   flutter_test:
